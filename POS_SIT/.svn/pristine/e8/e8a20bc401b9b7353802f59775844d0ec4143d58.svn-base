@@ -1,0 +1,227 @@
+package com.newgen.arm.util;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.newgen.iforms.custom.IFormReference;
+import com.newgen.masters.Fleet_Asset_Make_Master;
+
+public class ARMCommonUtils {
+	private static Logger logger = Logger.getLogger(ARMCommonUtils.class);
+	private static final Properties prop = new Properties();
+	
+	static {
+		try {
+
+			prop.load(new FileReader(System.getProperty("user.dir") + File.separator + "NG_Config" + File.separator
+					+ "ARM-Masters.properties"));
+
+		} catch (Exception e) {
+			logger.debug(e);
+			;
+		}
+	}
+
+	
+
+	
+
+	public static Properties getProp() {
+		logger.info("Property File fetching");
+		return prop;
+	}
+
+	public static String frameCountryMaster(String countryID, boolean checkCountryID) {
+		
+		String frameQuery = "";
+		try {
+						
+			String getColumns = getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS);
+			logger.debug("Columns : " + getColumns);
+			String[] tableColumns = getColumns.split(",");
+
+			if (checkCountryID&&!countryID.isEmpty()) {
+				
+				if (tableColumns.length == 4) {
+					
+					frameQuery = "SELECT " + tableColumns[0] + "," + tableColumns[1] + "," + tableColumns[2] + " FROM "
+							+ getProp().getProperty(ARMConstants.COUNTRY_MASTER_TABLE) + " WHERE " + tableColumns[0] + "='"
+							+ countryID + "'";
+					logger.debug("Query Framed " + frameQuery);
+
+				} else {
+					logger.debug("Try 1-2");
+					logger.debug("Exception in validations table columns");
+				}
+			} else {
+				
+				frameQuery = "SELECT " + tableColumns[0] + "," + tableColumns[1] + "," + tableColumns[2] + " FROM "
+						
+						+ getProp().getProperty(ARMConstants.COUNTRY_MASTER_TABLE);
+				logger.debug("Query Framed " + frameQuery);
+			}
+			return frameQuery;
+		} catch (Exception ex) {
+			
+			logger.debug(ex);
+			
+			return frameQuery;
+		}
+
+	}
+
+	public static void addDatainListView(String frameQuery, String gridColumnsName, String gridCustomControlID, IFormReference iformObj) {
+		try
+		{
+			List<List<String>> dateresult = iformObj.getDataFromDB(frameQuery);
+			logger.debug("Data retrieved  : "+dateresult);
+			
+			logger.debug(ARMCommonUtils.getProp().getProperty(gridCustomControlID)+" -1");
+			iformObj.clearTable(ARMCommonUtils.getProp().getProperty(gridCustomControlID));
+			JSONArray array = new JSONArray();
+			logger.debug(ARMCommonUtils.getProp().getProperty(gridColumnsName)+" -2");
+			String field_list=ARMCommonUtils.getProp().getProperty(gridColumnsName);
+			String[] field_list_array=field_list.split(",");
+			logger.debug("Field array: "+field_list_array);
+			for (List<String> internal_list : dateresult) 
+			{
+				JSONObject internal_object=null;
+				internal_object=new JSONObject();
+				for(int i=0;i<internal_list.size();i++)
+					{
+						internal_object.put(field_list_array[i],internal_list.get(i));
+					}
+				logger.debug("Internal Object"+internal_object.toString());
+				array.add(internal_object);
+			}
+			logger.debug("Object JSON Array : "+array.toString());
+			iformObj.addDataToGrid(ARMCommonUtils.getProp().getProperty(gridCustomControlID), array);
+			}
+		catch(Exception ex)
+		{
+			logger.debug(ex);
+		}
+		
+		}
+
+	public static int checkValue(String countryID, boolean checkNullCase, String tableName,
+			String column, IFormReference iformObj) {
+		String query="";
+		int columnCount=0;
+		try
+		{
+			query="SELECT COUNT(*) AS COUNT FROM "+tableName+" WHERE "+column+"='"+countryID+"'";
+			List<List<String>> dataResult = iformObj.getDataFromDB(query);
+			logger.debug("Data retrieved from Table : "+dataResult);
+			if(dataResult.size()>0)
+			{
+				for(List<String> getData:dataResult)
+				{
+					columnCount=Integer.parseInt(getData.get(0).toString());
+					logger.debug("Column Count Retrived : "+columnCount);
+				}
+			}
+			
+			return columnCount;
+			
+		}
+		catch(Exception ex)
+		{
+			logger.debug(ex);
+			return columnCount;
+		}
+		
+		
+	}
+
+	public static String frameInsertQuery(String table, String columns, String values) {
+		String query="";
+		try
+		{
+			query="INSERT INTO "+table+"("+columns+")"+" VALUES ("+values+")";
+			return query;
+		}
+		catch(Exception ex)
+		{
+			logger.debug(ex);
+			return query;
+		}
+		
+		
+	}
+
+	public static String frameUpdateQuery(String table, String setCondition, String whereCondition) {
+		String query="";
+		try
+		{
+			query="UPDATE "+table+" SET "+setCondition+" WHERE "+whereCondition;
+			return query;
+		}
+		catch(Exception ex)
+		{
+			logger.debug(ex);
+			return query;
+		}
+	}
+	/**
+	 * 
+	 * @param searchConstraint = Column on which where clause is framed
+	 * @param searchConstraintFlag 
+	 * @param searchForValue = Value present in search column to put in where clause
+	 * @return
+	 */
+	public static String frameSearchQuery(String searchConstraint, boolean searchConstraintFlag, String searchForValue, String columnsList, String masterTableName)  {
+		String frameQuery = "";
+		try {
+
+			//columnsList = getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS);
+			logger.debug("Columns : " + columnsList);
+
+			if (searchConstraintFlag && !searchForValue.isEmpty()) {
+				frameQuery = "SELECT " + columnsList + " FROM "
+						+ masterTableName + " WHERE " + searchConstraint + "='"
+						+ searchForValue + "'";
+				logger.debug("Query Framed " + frameQuery);
+
+			}
+			else {
+
+				frameQuery = "SELECT " + columnsList + " FROM " + masterTableName;
+				logger.debug("Query Framed " + frameQuery);
+			}
+			return frameQuery;
+		} catch (Exception ex) {
+
+			logger.debug(ex);
+
+			return frameQuery;
+		}
+	}
+	
+	// This function is used to fetch and show all the data into grids in iForm
+		public static void fleetSearchButtonClick(String searchConstraint, boolean searchConstraintFlag, String searchForValue, String columnsList, String masterTableName, 
+				String gridColumnsName, String gridCustomControlID, IFormReference iformObj) {
+
+			try {
+				
+				logger.debug("Inside fleetSearchButtonClick function values are searchContraint:"+searchConstraint+" searchConstraintFlag: "+searchConstraintFlag+" columnsList: "+columnsList+" masterTableName: "+masterTableName+" "
+						+ " gridColumnsName: "+gridColumnsName+" gridCustomControlID: "+gridCustomControlID+" iformObj: "+iformObj+" searchForValue: "+searchForValue+" masterTableName: "+masterTableName);
+				String frameQuery=ARMCommonUtils.frameSearchQuery(searchConstraint, searchConstraintFlag, searchForValue, columnsList, masterTableName);
+				if(ARMUtils.checkNullCase(frameQuery)&&!frameQuery.isEmpty()) {
+
+					ARMCommonUtils.addDatainListView(frameQuery, gridColumnsName, gridCustomControlID, iformObj);
+				}	
+			} catch(Exception e) {
+				logger.error("Error occured in fleetSearchButtonClick() function "+e);
+			}
+		}
+	
+	
+
+}

@@ -1,0 +1,227 @@
+package com.newgen.masters;
+
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.newgen.arm.util.ARMCommonUtils;
+import com.newgen.arm.util.ARMConstants;
+import com.newgen.arm.util.ARMUtils;
+import com.newgen.iforms.EControl;
+import com.newgen.iforms.FormDef;
+import com.newgen.iforms.custom.IFormReference;
+import com.newgen.iforms.custom.IFormServerEventHandler;
+import com.newgen.iforms.user.FleetCommon;
+import com.newgen.mvcbeans.model.WorkdeskModel;
+
+public class Fleet_Country_Master extends ARMUtils implements IFormServerEventHandler {
+
+	Logger logger = Logger.getLogger(Fleet_Country_Master.class);
+
+	@Override
+	public void beforeFormLoad(FormDef arg0, IFormReference arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public String executeCustomService(FormDef arg0, IFormReference arg1, String arg2, String arg3, String arg4) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JSONArray executeEvent(FormDef arg0, IFormReference arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String executeServerEvent(IFormReference iformObj, String controlName, String eventType, String stringData) {
+		try {
+			logger.debug("Execute Events : " + controlName);
+			logger.debug("Execute Events : " + controlName);
+			switch (eventType) {
+			case "click": {
+
+				if ("countrySearchClick".equalsIgnoreCase(controlName)) {
+					String countryID = getControlValue(iformObj, ARMConstants.COUNTRY_MASTER_COUNTRYID);
+					String countryNameEn = getControlValue(iformObj, ARMConstants.COUNTRY_MASTER_COUNTRYNAMEEN);
+					String countryNameArb = getControlValue(iformObj, ARMConstants.COUNTRY_MASTER_COUNTRYNAMEARB);
+
+					logger.debug("Country ID : " + countryID);
+					logger.debug("Country Name EN : " + countryNameEn);
+					logger.debug("Country Name ARB : " + countryNameArb);
+
+					String frameQuery = ARMCommonUtils.frameCountryMaster(countryID, checkNullCase(countryID));
+					logger.debug("Query retrieved : "+frameQuery);
+					if (checkNullCase(frameQuery) && !frameQuery.isEmpty()) {
+
+						ARMCommonUtils.addDatainListView(frameQuery, ARMConstants.COUNTRY_MASTER_GRID_COLUMNS,
+								ARMConstants.COUNTRY_MASTER_GRID_CUSTOM_CONTROL_ID, iformObj);
+					}
+				}
+				break;
+			}
+			case "insertOrUpdate": {
+				if ("countryGridValidate".equalsIgnoreCase(controlName)) {
+					
+					logger.debug("Inside "+ controlName);
+					String countryID = getControlValue(iformObj, ARMConstants.COUNTRYMASTER_GRID_COUNTRYID);
+					String countryNameEn = getControlValue(iformObj, ARMConstants.COUNTRYMASTER_GRID_COUNTRYNAMEEN);
+					String countryNameArb = getControlValue(iformObj, ARMConstants.COUNTRYMASTER_GRID_COUNTRYNAMEARB);
+					int isCountryPresent;
+					String response="";
+					String insertQuery="";
+					String updateQuery="";
+					logger.debug("Country ID : " + countryID);
+					logger.debug("Country Name EN : " + countryNameEn);
+					logger.debug("Country Name ARB : " + countryNameArb);
+					
+					String columnDetails=ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS);
+					String[] columns=columnDetails.split(",");
+					String[] countryColumns=ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS).split(",");
+					String insertCol="";
+					isCountryPresent=ARMCommonUtils.checkValue(countryID,checkNullCase(countryID),ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_TABLE),columns[0],iformObj);
+					logger.debug("Number of Rows : " + isCountryPresent);
+					if(isCountryPresent==0)
+					{
+						logger.debug("FRAME INSERT");
+						
+						for(int i=0;i<countryColumns.length-1;i++)
+						{
+							insertCol=insertCol+countryColumns[i]+",";
+						}
+						logger.debug("Insert Values Script : "+insertCol);
+						if(ARMUtils.checkNullCase(countryID)&&ARMUtils.checkNullCase(countryNameEn)&&checkNullCase(countryNameArb))
+						{
+						insertQuery=ARMCommonUtils.frameInsertQuery(ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_TABLE),insertCol.substring(0, insertCol.length()-1),"'"+countryID+"'"+",'"+countryNameEn+"',"+"N'"+countryNameArb+"'");
+						logger.debug("Insert Query framed "+insertQuery);
+						iformObj.saveDataInDB(insertQuery);
+						return countryID+ "- Added";
+						}
+						else
+						{
+							return countryID+ "Not-Added";
+						}
+					}
+					else if(isCountryPresent==1)
+					{
+						logger.debug("FRAME UPDATE");
+					    if(ARMUtils.checkNullCase(countryID)&&!countryID.isEmpty())
+					    {
+					    	String setCondition=ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS_COUNTRY_ID)+"='"+countryID+"',"+ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS_COUNTRY_NAME)+"='"+countryNameEn+"',"+ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS_COUNTRY_NAME_AR)+"=N'"+countryNameArb+"',"+ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS_ISACTIVE)+"='Y'";
+					    	
+					    	logger.debug(setCondition);
+					    	
+					    	String whereCondition=ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_COLUMNS_COUNTRY_ID)+"='"+countryID+"'";
+					    	
+					    	logger.debug(whereCondition);
+					    	
+					    	updateQuery=ARMCommonUtils.frameUpdateQuery(ARMCommonUtils.getProp().getProperty(ARMConstants.COUNTRY_MASTER_TABLE),setCondition,whereCondition);
+					   
+					    	logger.debug("Update Query framed "+updateQuery);
+					    	iformObj.saveDataInDB(updateQuery);
+					    	return countryID+ "- Updated";
+					    }
+					    else
+					    {
+					    	return countryID+ "Not-Updated";
+					    }										
+					}
+
+				}
+
+				break;
+			}
+			}
+
+		} catch (Exception ex) {
+			logger.debug(ex);
+		}
+		return null;
+	}
+
+
+
+	@Override
+	public String generateHTML(EControl arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getCustomFilterXML(FormDef arg0, IFormReference arg1, String arg2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String introduceWorkItemInWorkFlow(IFormReference arg0, HttpServletRequest arg1, HttpServletResponse arg2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String introduceWorkItemInWorkFlow(IFormReference arg0, HttpServletRequest arg1, HttpServletResponse arg2,
+			WorkdeskModel arg3) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String setMaskedValue(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		return arg1;
+	}
+
+	@Override
+	public void updateDataInWidget(IFormReference arg0, String arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public String validateDocumentConfiguration(String arg0, String arg1, File arg2, Locale arg3) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JSONArray validateSubmittedForm(FormDef arg0, IFormReference arg1, String arg2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean introduceWorkItemInSpecificProcess(IFormReference arg0, String arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String onChangeEventServerSide(IFormReference arg0, String arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String postHookExportToPDF(IFormReference arg0, File arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void postHookOnDocumentUpload(IFormReference arg0, String arg1, String arg2, File arg3, int arg4) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

@@ -1,0 +1,35 @@
+package com.newgen.arm.util;
+
+import java.util.Optional;
+
+import com.newgen.iforms.custom.IFormReference;
+
+public class ARMUtils {
+	
+	public static boolean checkNullCase(String controlID)
+	{
+		Optional<String> checkNull;
+		try
+		{
+			checkNull=Optional.ofNullable(controlID);
+			if(checkNull.isPresent())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(Exception ex)
+		{
+			return false;
+		}
+	}
+	
+	public String getControlValue(IFormReference iformObj, String controlName) {
+		return (String) iformObj.getValue(controlName);
+	}
+
+
+}

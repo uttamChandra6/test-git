@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/Admin.jar"/>
+	<classpathentry kind="lib" path="lib/ADNIC_BRMS.jar"/>
+	<classpathentry kind="lib" path="lib/aws-java-sdk-1.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/bcpkix-jdk15on-1.49.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk15on-1.49.jar"/>
+	<classpathentry kind="lib" path="lib/BRMS_ADNIC.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/CustomLogging.jar"/>
+	<classpathentry kind="lib" path="lib/DataEncryption.jar"/>
+	<classpathentry kind="lib" path="lib/dmsapi.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.5.9.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.4.11.jar"/>
+	<classpathentry kind="lib" path="lib/iforms.jar"/>
+	<classpathentry kind="lib" path="lib/ISPack.jar"/>
+	<classpathentry kind="lib" path="lib/itextpdf-5.5.8.jar"/>
+	<classpathentry kind="lib" path="lib/java-json.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-servlet-api_4.0_spec-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jdts.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-2.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/ngejbcallbroker.jar"/>
+	<classpathentry kind="lib" path="lib/NGWebServiceClient_pluggable V3.2.jar"/>
+	<classpathentry kind="lib" path="lib/NGWebServiceClient.jar"/>
+	<classpathentry kind="lib" path="lib/NIPLJ.jar"/>
+	<classpathentry kind="lib" path="lib/nsms.jar"/>
+	<classpathentry kind="lib" path="lib/omnishared.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.commons.io.jar"/>
+	<classpathentry kind="lib" path="lib/SecurityAPI.jar"/>
+	<classpathentry kind="lib" path="lib/wfdesktop.jar"/>
+	<classpathentry kind="lib" path="lib/xom-1.2.6.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

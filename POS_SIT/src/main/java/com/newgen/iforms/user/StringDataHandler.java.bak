@@ -1,0 +1,388 @@
+package com.newgen.iforms.user;
+
+//SK
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.newgen.iforms.custom.IFormReference;
+import com.newgen.integration.GetXML;
+import com.newgen.integration.SocketConnector;
+import com.newgen.omni.jts.cmgr.XMLParser;
+import com.newgen.wfdesktop.xmlapi.WFXmlList;
+import com.newgen.wfdesktop.xmlapi.WFXmlResponse;
+
+
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+public class StringDataHandler extends POSCommon {
+	Logger logger = Logger.getLogger(StringDataHandler.class);
+
+	public String stringHandler(IFormReference iformObj, String control, String stringdata) {
+		String callName = "";
+		String responseXML;
+		// Logger.getLogger()
+
+		if (control.equalsIgnoreCase("setRoutingLevel")) {
+			logger.info("Inside stringHandler function");
+			return setRoutingLevel(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("AddToDecisionHistoryGrid")) {
+			logger.info("inside Decision function choice");
+			return addToDecisionHistoryGrid(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fetchTHIQAH")) {
+			logger.info("Inside Fetch Thiqah button");
+			callName = "GetCrInfobyCrNo";
+			responseXML = createRequestXML(iformObj, callName);
+			setResponseData(iformObj, callName, responseXML);
+			return "";
+		} else if (control.equalsIgnoreCase("FillDisbursementDetails")) {
+			logger.info("inside Fill Disbursement details");
+			return fillDisbursementDetails(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("createDisbursementWI")) {
+			logger.info("inside create Disbursement WI details");
+			return createDisbursementWI(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("fillStatementData")) {
+			logger.info("inside fill statement data");
+			return fillStatementData(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("fillCTFMSBData")) {
+			logger.info("inside fillCTFMSBData function ");
+			return fillCTFMSBData(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("fillTerminalId")) {
+			logger.info("inside fillTerminalId function ");
+			return fillTerminalId(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("fillPOSdetails")) {
+			logger.info("inside fillPOSdetails function ");
+			return fillPOSdetails(iformObj, stringdata);
+		}	
+		
+		return stringdata;
+	}
+	
+
+	private String fillPOSdetails(IFormReference iformObj, String stringdata) {
+		String callName="MerchantPOSTrxnsSummaryInq";
+		String responseXML;
+		responseXML = createRequestXML(iformObj, callName);
+		setResponseDataGrid(iformObj, callName, responseXML);
+		
+		return "successfully returned";
+		
+	}
+
+	private String fillTerminalId(IFormReference iformObj, String stringdata) {
+		String callName="MerchantPOSTerminalsInq";
+		String responseXML;
+		responseXML = createRequestXML(iformObj, callName);
+		setResponseToDropdown(iformObj, callName, responseXML);
+		
+		return "hello";
+	}
+
+	private String fillCTFMSBData(IFormReference iformObj, String stringdata) {
+		
+		String callName="LoanDisburseDataInq";
+		logger.info(stringdata);
+		int rowindex=Integer.parseInt(stringdata);
+		logger.info("Row index selected by user is"+rowindex);
+		JSONArray jsonarr=iformObj.getDataFromGrid("Q_NG_POS_CREDITLINE_CTF_MSB_GRID");
+		JSONObject jsonobj=(JSONObject) jsonarr.get(rowindex);
+		String dossier_id=(String) jsonobj.get("Dossier No");
+		logger.info("Dossier Id is"+dossier_id);
+		
+		logger.info("Inside createRequestXML Function and callName is " + callName);
+		String tagName = "_TagName";
+		String tagNames = GetXML.getProp().getProperty(callName + tagName);
+		logger.info(tagNames);
+		String[] tags = tagNames.split(",");
+
+		String requestXML = readDummyRequest(callName);
+		XMLParser parser = new XMLParser(requestXML);
+		
+		for (String tag : tags) {
+			String tagValue = parser.getValueOf(tag);
+			if (tagValue.startsWith("formid~")) {
+				String value = (String) iformObj.getValue(tagValue.split("~")[1]);
+				parser.changeValue(tag, value);
+			}
+		}
+		
+		parser.changeValue("DossierID",dossier_id);
+		System.out.println("RequestXML is :\n" + parser.toString());
+		logger.info("RequestXML is :\n" + parser.toString());
+		String responseXML = new SocketConnector().getSocketXMLResponse(parser.toString(), callName);
+		
+		logger.info("Response XML received by setResponseDataGrid for CTF MSB is"+responseXML);
+		tagName = "_TagNameResponseGrid";
+		tagNames = GetXML.getProp().getProperty(callName + tagName);
+		logger.info(tagNames);
+		String[] tagValue = tagNames.split(",");
+		for(String tag: tagValue)
+		{
+			tags=tag.split("~");
+			WFXmlResponse objWFxmlResponse = new WFXmlResponse(responseXML);
+			logger.info("objWFxmlResponse value is "+objWFxmlResponse);
+			jsonarr=new JSONArray();
+			if (objWFxmlResponse.getVal("alr1:StatusCd").equals("0")) {
+			WFXmlList WFXmlList = objWFxmlResponse.createList(tags[0],tags[1]);
+			logger.info("Wfmxmlsit is --------------"+WFXmlList);
+			
+			for (int i = 0; WFXmlList.hasMoreElements(true); WFXmlList.skip(true), i++) {
+		
+				jsonobj = new JSONObject();
+				logger.info("iiiiiiiiii"+i);
+				logger.info("Dossier id we want is"+dossier_id);
+				logger.info("Dossier id avaiaalable is"+WFXmlList.getVal("DossierID"));
+				if(WFXmlList.getVal("DossierID").equalsIgnoreCase(dossier_id))
+				{
+					for(int j=2;j<tags.length-1;++j)
+					{
+						String one=tags[j];
+						logger.info("333333333333333333"+one);
+						String []temp=one.split("#");
+						logger.info("@@@"+temp[0]+"!!!!"+temp[1]);
+						String xyz=WFXmlList.getVal(temp[1]);
+						logger.info("xyz"+xyz);
+						if(xyz== null || xyz=="")
+						{
+							xyz=" ";
+						}
+						jsonobj.put(temp[0],xyz);
+					}
+					jsonarr.add(jsonobj);
+				}
+				
+				
+			}
+			logger.info(jsonarr);
+			logger.info("ID of table is table90");
+			iformObj.clearTable("table90");
+			iformObj.addDataToGrid("table90", jsonarr);
+			}
+		}
+		
+		return "All Good";
+	}
+
+	private String fillStatementData(IFormReference iformObj, String stringdata) {
+		
+		String []callNames={"MSBAcctsDataInq","MSBFacilitiesDataInq"};
+		for(String callName:callNames)
+		{
+			String responseXML;
+			responseXML = createRequestXML(iformObj, callName);
+			setResponseDataGrid(iformObj, callName, responseXML);
+		}
+		return "";
+	}
+
+	private String createDisbursementWI(IFormReference iformObj, String stringdata) {
+		String winame_parent=getControlValue(iformObj, "WI_NAME");
+		
+		String winame_disbursement = "";
+		POSCommon obj = new POSCommon(iformObj);
+		logger.info("createDisbursementWI before call");
+		winame_disbursement = obj.createWorkitemDisbursement(iformObj, stringdata);
+		
+
+		
+		//Start of temp block
+		// Remove this after adding trigger to update WI_name, otherwise manually change it.
+		String temp="UPDATE NG_DISBURSEMENT_EXTTABLE SET WI_NAME='"+winame_disbursement+"' WHERE ITEMINDEX='9583'";
+		logger.info(temp);
+		iformObj.saveDataInDB(temp);
+		//End of temp block
+		
+		
+		String query="UPDATE NG_DISBURSEMENT_EXTTABLE SET PARENT_WI_NAME='"+winame_parent+"' WHERE WI_NAME='"+winame_disbursement+"' ";
+		logger.info(query);
+		iformObj.saveDataInDB(query);
+		
+		logger.info("createDisbursementWI after call");
+		return null;
+	}
+
+	private String fillDisbursementDetails(IFormReference iformObj, String stringdata) {
+		
+		try {
+			
+		String app_limit_amt=getControlValue(iformObj,"Q_NG_POS_APPLICATION_DATA_APPROVED_LIMIT_AMT_AFTER_SIMAH");
+		String avail_amt_for_disbursement=getControlValue(iformObj,"Q_NG_POS_APPLICATION_DATA_AVAIL_AMT_FOR_DISBURSEMENT");
+		String amt_to_be_disbursed=getControlValue(iformObj, "Q_NG_POS_APPLICATION_DATA_AMT_TO_BE_DISBURSED");
+		String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+		String disbursement_workitem_no="";
+		
+		String parent_wi_name=getControlValue(iformObj,"WI_NAME");
+		/*
+		String query="SELECT WI_NAME FROM NG_DISBURSEMENT_EXTTABLE WHERE PARENT_WI_NAME='"+parent_wi_name+"'";
+		logger.info(query);
+		List<List<String>> result=getDataFromDB(iformObj, query);
+		disbursement_workitem_no=result.get(0).get(0);
+		*/
+		logger.info("Disburseemnt work item no"+disbursement_workitem_no);
+		JSONArray jsonArr = new JSONArray();
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("Application Amount after SIMAH",app_limit_amt);
+		jsonObj.put("Available Amount for Disbursement",avail_amt_for_disbursement);
+		jsonObj.put("Amount to be Disbursed",amt_to_be_disbursed);
+		jsonObj.put("Date Time",date);
+		jsonObj.put("Disbursement Workitem No.",disbursement_workitem_no);
+		
+		logger.info("Json Array is"+jsonObj);
+		jsonArr.add(jsonObj);
+		iformObj.addDataToGrid("Q_NG_POS_DISBURSEMENT_GRID", jsonArr); 
+		
+		}catch(Exception e)
+		{
+			logger.error("Exception catched in  addToDecisionHistoryGrid", e);
+		}
+		
+		return "All is well";
+	}
+
+	public String addToDecisionHistoryGrid(IFormReference iformObj, String stringData) {
+		try {
+			logger.info("inside addToDecisionHistoryGrid");
+			String strData[] = stringData.split("#");
+			String Workstep = strData[0];
+			logger.info("workstep name is " + Workstep);
+			String username = strData[1];
+			logger.info("username name is " + username);
+			String decision = getControlValue(iformObj, "DECISION");
+			logger.info("decision name is " + decision);
+			String action = getControlValue(iformObj, "REMARKS");
+			logger.info("action name is " + action);
+			String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+			logger.info("date name is " + date);
+			JSONArray jsonArr = new JSONArray();
+			JSONObject jsonObj = new JSONObject();
+
+			jsonObj.put("Date Time", date);
+
+			logger.info(date);
+			jsonObj.put("Workstep", Workstep);
+			logger.info("inside Decision his");
+			logger.info(Workstep);
+			jsonObj.put("Decision", decision);
+			logger.info(decision);
+			jsonObj.put("User Name", username);
+			logger.info(username);
+			jsonObj.put("Remark", action);
+			logger.info(action);
+			jsonObj.put("TAT", " ");
+			logger.info("TAT");
+			logger.info("Jason object value is " + jsonObj);
+			jsonArr.add(jsonObj);
+			iformObj.addDataToGrid("table78", jsonArr); // table78 is the id of decision history table
+		} catch (Exception e) {
+			logger.error("Exception catched in  addToDecisionHistoryGrid", e);
+		}
+		return "SUCCESS~DataAddedToGrid";
+	}
+
+	private String setRoutingLevel(IFormReference iformObj, String stringdata) {
+		// TODO Auto-generated method stub
+		logger.info("Inside setRoutingLevel function");
+		String query = "";
+
+		// Added by SK
+		if (stringdata.equalsIgnoreCase("BR")) {
+			logger.info("BR CASE");
+			query = "select max(route_level) as final_level from(select min(b.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and B.amt>A.app_limit_amt AND B.APPROVAL_TYPE='Business' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj)
+					+ "' UNION select min(B.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and A.no_of_exception=B.no_of_exception AND B.APPROVAL_TYPE='Business' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj) + "') D";
+		} else if (stringdata.equalsIgnoreCase("CR")) {
+			logger.info("CR CASE");
+			query = "select max(route_level) as final_level from(select min(b.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and B.amt>A.app_limit_amt AND B.APPROVAL_TYPE='Credit Risk' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj)
+					+ "' UNION select min(B.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and A.no_of_exception=B.no_of_exception AND B.APPROVAL_TYPE='Credit Risk' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj) + "') D";
+		}
+
+		String final_level = "";
+		List<List<String>> comboValues = getDataFromDB(iformObj, query);
+		logger.info(comboValues);
+
+		for (List<String> value : comboValues) {
+			final_level = value.get(0);
+			logger.debug("final_level :: " + final_level);
+			setControlValue(iformObj, "FINAL_ROUTING_LEVEL", final_level);
+		}
+
+		return "SUCCESS";
+
+	}
+
+	private String fillTrassetData(IFormReference iformObj, String stringdata) {
+		
+		String cic_no=getControlValue(iformObj, "Q_NG_POS_COMPANY_DATA_CIC");
+		//String wi_name=getControlValue(iformObj, "WI_NAME");
+				
+		String query="SELECT * FROM NG_MAST_TRASSET_DATA WHERE CIC='"+cic_no+"' ";
+		List<List<String>> result = getDataFromDB(iformObj, query);
+		logger.info("result from mast data is"+result);
+		logger.info("result at 0 index is "+result.get(0));
+		logger.info("result at 0,0 index is"+result.get(0).get(0));
+		
+	
+		JSONArray jsonarray=new JSONArray();
+		JSONObject jsonobject;
+		
+		List<List<String>> resultfromDB = getDataFromDB(iformObj, query);
+		logger.info(result);
+		
+		
+		for(List<String> value : resultfromDB)
+		{
+			jsonobject=new JSONObject();
+			jsonobject.put("Trasset Ref No", value.get(1));
+			jsonobject.put("Product Name",value.get(2));
+			jsonobject.put("Revolving",value.get(3));
+			jsonobject.put("Profit Rate Type",value.get(4));
+			jsonobject.put("Profit Rate",value.get(5));
+			jsonobject.put("Effective Rate"," ");
+			jsonobject.put("Expiry Date",value.get(8));
+			jsonobject.put("Approved Amount"," ");
+			jsonobject.put("Availed Amount"," ");
+			jsonobject.put("Outstanding Amount",value.get(13));
+			jsonobject.put("Available Amount",value.get(14));
+			jsonobject.put("ORR"," ");
+			jsonobject.put("Days in PDO",value.get(16));
+			jsonobject.put("PDO Amount",value.get(17));
+			jsonobject.put("Write Off",value.get(18));
+			jsonobject.put("RM code",value.get(20));
+			jsonobject.put("RM Name",value.get(21));
+			jsonobject.put("TL Name",value.get(22));
+			
+			jsonarray.add(jsonobject);
+		}
+		
+		iformObj.addDataToGrid("Q_NG_POS_CREDITLINE_TRASSET_DET_GRID", jsonarray);
+		
+		return "Trasset Data filled succesfully";
+	}
+	/*
+	 * private String setRoutingLevel(IFormReference iformObj) { // TODO
+	 * Auto-generated method stub logger.info("Inside setRoutingLevel function");
+	 * 
+	 * String
+	 * query="select max(route_level) as final_level from(select c.level_id as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and B.amt>A.app_limit_amt AND a.wi_name='"
+	 * +getWorkitemName(iformObj)
+	 * +"' UNION select C.level_id as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and A.no_of_exception=B.no_of_exception AND a.wi_name='"
+	 * +getWorkitemName(iformObj)+"') D"; String final_level=""; List<List<String>>
+	 * comboValues = getDataFromDB(iformObj,query); logger.info(comboValues);
+	 * 
+	 * for(List<String> value : comboValues) { final_level=value.get(0);
+	 * logger.debug("final_level :: "+final_level); setControlValue(iformObj,
+	 * "FINAL_ROUTING_LEVEL", final_level); }
+	 * 
+	 * return "SUCCESS";
+	 * 
+	 * }
+	 */
+
+}

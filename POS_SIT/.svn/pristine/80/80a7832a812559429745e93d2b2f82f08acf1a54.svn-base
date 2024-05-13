@@ -1,0 +1,240 @@
+package com.newgen.iforms.user;
+import org.apache.log4j.Logger;
+
+import com.newgen.iforms.custom.IFormListenerFactory;
+import com.newgen.iforms.custom.IFormReference;
+import com.newgen.iforms.custom.IFormServerEventHandler;
+import com.newgen.masters.Fleet_Asset_Class_Master;
+import com.newgen.masters.Fleet_Asset_Make_Master;
+import com.newgen.masters.Fleet_Asset_Model_Master;
+import com.newgen.masters.Fleet_Asset_Type_Master;
+import com.newgen.masters.Fleet_Asset_Variant_Master;
+import com.newgen.masters.Fleet_Branches_Master;
+import com.newgen.masters.Fleet_City_Master;
+import com.newgen.masters.Fleet_Country_Master;
+import com.newgen.masters.Fleet_Customer_Master;
+import com.newgen.masters.Fleet_District_Master;
+import com.newgen.masters.Fleet_Fuel_Type_Master;
+import com.newgen.masters.Fleet_Insurance_Master;
+import com.newgen.masters.Fleet_Owners_Master;
+import com.newgen.masters.Fleet_Product_Master;
+import com.newgen.masters.Fleet_Region_Master;
+import com.newgen.masters.Fleet_Segment_Master;
+import com.newgen.masters.Fleet_Supplier_Master;
+import com.newgen.masters.Fleet_Supplier_Showrooms_Master;
+import com.newgen.masters.Fleet_Supplier_Types_Master;
+import com.newgen.masters.Fleet_Supplier_Vehicles_Master;
+import com.newgen.masters.Fleet_Transmission_Type_Master;
+import com.newgen.masters.Fleet_Vehicle_Users_Master;
+import com.newgen.util.Constants;
+import com.newgen.util.LogUtility;
+import com.newgen.workstep.Fleet_Search;
+
+//public class POS implements IFormListenerFactory {
+public class Fleet implements IFormListenerFactory {
+
+
+	static {
+		LogUtility.initializeLogger();
+	}
+
+	Logger logger = Logger.getLogger(Fleet.class);
+
+	public IFormServerEventHandler getClassInstance(IFormReference iFormReference) {
+		
+		String activityName = iFormReference.getActivityName();
+		try {
+			logger.debug("pos.java file>>>>activityName "+activityName);
+			System.out.println("activityName "+activityName);
+			if(activityName.equalsIgnoreCase(Constants.WORKSTEP.POS_SEARCH))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 1"+activityName);
+				return new Fleet_Search();
+			}
+			else if(Constants.WORKSTEP.FLEET_COUNTRY_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Country_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_ASSET_MAKE_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Asset_Make_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_ASSET_TYPE_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Asset_Type_Master();
+			}
+			
+			else if(Constants.WORKSTEP.FLEET_ASSET_CLASS_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Asset_Class_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_ASSET_VARIANT_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Asset_Variant_Master();
+			}
+			
+			//aa
+			/*
+			 * else if(Constants.WORKSTEP.FLEET_ASSET_DETAILS_MASTER.equalsIgnoreCase(
+			 * activityName)) {
+			 * logger.debug("pos.java file>>>>activityName CASE 2"+activityName); return new
+			 * Fleet_Asset_Details_Master(); }
+			 */
+			else if(Constants.WORKSTEP.FLEET_ASSET_MODEL_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Asset_Model_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_BRANCHES_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Branches_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_CITY_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_City_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_CUSTOMER_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Customer_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_DISTRICT_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_District_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_FUEL_TYPE_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Fuel_Type_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_FUEL_TYPE_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Fuel_Type_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_INSURANCE_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Insurance_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_OWNERS_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Owners_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_OWNERS_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Owners_Master();
+			}
+			
+			else if(Constants.WORKSTEP.FLEET_PRODUCT_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Product_Master();
+			}
+			
+			else if(Constants.WORKSTEP.FLEET_REGION_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Region_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_SEGMENT_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Segment_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_SUPPLIER_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Supplier_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_SUPPLIER_SHOWROOMS_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Supplier_Showrooms_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_SUPPLIER_TYPES_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Supplier_Types_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_SUPPLIER_VEHICLES_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Supplier_Vehicles_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_TRANSMISSION_TYPE_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Transmission_Type_Master();
+			}
+			else if(Constants.WORKSTEP.FLEET_VEHICLE_USERS_MASTER.equalsIgnoreCase(activityName))
+			{
+				logger.debug("pos.java file>>>>activityName CASE 2"+activityName);
+				return new Fleet_Vehicle_Users_Master();
+			}
+			else
+			{
+				logger.debug("pos.java file>>>>activityName CASE 3"+activityName);
+				return new EventHandler();	
+			}
+		} catch (Exception e) {
+			logger.error("ex in getClassInstance : ", e);
+		}
+		return null;
+	}
+	
+	
+	/*
+	public static void setLogger() 
+	{
+		try 
+		{
+			Date date = new Date();
+			DateFormat logDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			
+		
+			Properties p = new Properties();
+			p.load(new FileInputStream(System.getProperty("user.dir")+ File.separator + "CustomConfig"+ File.separator+ "log4j_ARB.properties"));
+			String dynamicLog = null;
+			String orgFileName = null; 
+			File d = null;
+			File fl = null; 
+			
+			dynamicLog = "CustomLog"+File.separator+processName+"_Logs"+File.separator+logDateFormat.format(date)+File.separator+processName+"_Log.xml";
+			orgFileName = p.getProperty("log4j.appender."+loggerName+".File");
+			if(!(orgFileName==null || orgFileName.equalsIgnoreCase("")))
+			{
+				dynamicLog = orgFileName.substring(0,orgFileName.lastIndexOf("/")+1)+logDateFormat.format(date)+orgFileName.substring(orgFileName.lastIndexOf("/"));
+			}			
+			d = new File(dynamicLog.substring(0,dynamicLog.lastIndexOf("/")));
+			d.mkdirs();
+			fl = new File(dynamicLog);
+			boolean fc = false;
+			if(!fl.exists())
+				 fc= fl.createNewFile();
+			
+			p.put("log4j.appender."+loggerName+".File", dynamicLog );
+			PropertyConfigurator.configure(p);
+			
+		//	loggerDateMap.put(logDateFormat.format(date),"Y");
+			
+		}
+		catch (Exception e) 
+		{
+			printException(e);
+		}
+	}
+	*/
+	
+	
+}

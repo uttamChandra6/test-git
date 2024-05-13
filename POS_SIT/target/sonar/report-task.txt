@@ -1,0 +1,6 @@
+projectKey=com.adnic.mi
+serverUrl=http://192.168.149.246:9000
+serverVersion=7.7.0.23042
+dashboardUrl=http://192.168.149.246:9000/dashboard?id=com.adnic.mi
+ceTaskId=AXU9DACAnfl8UMXsGDtO
+ceTaskUrl=http://192.168.149.246:9000/api/ce/task?id=AXU9DACAnfl8UMXsGDtO

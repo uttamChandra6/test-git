@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="POS_SIT/src/main/java"/>
+	<classpathentry kind="lib" path="POS_SIT/dist/Fleet.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/Admin.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/ADNIC_BRMS.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/aws-java-sdk-1.2.5.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/bcpkix-jdk15on-1.49.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/bcprov-jdk15on-1.49.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/BRMS_ADNIC.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/commons-codec-1.7.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/CustomLogging.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/DataEncryption.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/dmsapi.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/httpclient-4.5.9.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/httpcore-4.4.11.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/iforms.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/ISPack.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/itextpdf-5.5.8.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/java-json.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/jboss-servlet-api_4.0_spec-1.0.0.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/jdts.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/json-simple-2.1.2.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/ngejbcallbroker.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/NGWebServiceClient_pluggable V3.2.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/NGWebServiceClient.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/NIPLJ.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/nsms.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/omnishared.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/org.apache.commons.io.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/SecurityAPI.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/wfdesktop.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/lib/xom-1.2.6.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/target/ADNIC-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="POS_SIT/target/ADNIC.jar"/>
+	<classpathentry kind="output" path="POS_SIT/target/classes"/>
+</classpath>

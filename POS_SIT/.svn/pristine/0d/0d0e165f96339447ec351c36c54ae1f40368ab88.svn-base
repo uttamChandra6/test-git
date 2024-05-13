@@ -1,0 +1,38 @@
+Q_NG_POS_APPLICATION_DATA_REQ_AMNT_SAR=مبلغ التمويل المطلوب (ريال سعودي)
+Q_NG_POS_APPLICATION_DATA_REQUEST_TYPE=نوع الطلب
+Q_NG_POS_APPLICATION_DATA_PRODUCT_CATEGORY=فئة المنتج
+Q_NG_POS_APPLICATION_DATA_PRODUCT=المنتج
+Q_NG_POS_APPLICATION_DATA_CUSTOMER_CATEGORY = فئة العميل
+Q_NG_POS_APPLICATION_DATA_CAMPAIGN=الحملة
+Q_NG_POS_APPLICATION_DATA_MAX_INDICATIVE_AMT_ELIGIBLE=الحد الأعلى المؤهل للتمويل
+Q_NG_POS_APPLICATION_DATA_APPROVED_LIMIT_AMT_AFTER_SIMAH=الحد الأعلى المسموح ( بعد تقرير سمه)
+Q_NG_POS_APPLICATION_DATA_FREQUENCY=وتيرة دفع الأقساط
+Q_NG_POS_APPLICATION_DATA_TENURE=مدة السداد
+Q_NG_POS_APPLICATION_DATA_NO_OF_INSTALLMENT=عدد الأقساط
+Q_NG_POS_APPLICATION_DATA_CONTRACT_DATE=تاريخ العقد
+Q_NG_POS_APPLICATION_DATA_GRACE_PERIOD=فترة السماح
+Q_NG_POS_APPLICATION_DATA_GRACE_IN_MONTH=فترة السماح بالأشهر
+Q_NG_POS_APPLICATION_DATA_GRACE_PRD_CAPITALIZATION=رسملة فترة السماح
+Q_NG_POS_APPLICATION_DATA_PROFIT=نسبة الأرباح
+Q_NG_POS_APPLICATION_DATA_PURPOSE_OF_FACILITY=الغرض من التسهيلات
+Q_NG_POS_APPLICATION_DATA_LIMIT_VALIDITY=صلاحية الحد التمويلي
+Q_NG_POS_APPLICATION_DATA_DISBURSAL_BANKNAME=إسم المصرف المحول له مبلغ التمويل
+Q_NG_POS_APPLICATION_DATA_DISBURSAL_ACC_NO=رقم الحساب المحول له مبلغ التمويل
+Q_NG_POS_APPLICATION_DATA_TOTAL_PROFIT=الأرباح الإجمالية
+Q_NG_POS_APPLICATION_DATA_EFFECTIVE_RATE=نسبة الأرباح الفعلية
+Q_NG_POS_APPLICATION_DATA_APR=النسبة السنوية
+Q_NG_POS_APPLICATION_DATA_INSTALLMENT_AMNT=مبلغ القسط
+Q_NG_POS_APPLICATION_DATA_SIMULATION_RUN_REF=رقم ملف المحاكاة
+Q_NG_POS_APPLICATION_DATA_ARNGMNT_REFERENCE_NO=رقم عقد التمويل
+NG_MSB_CIC_NO_label=رقم العميل في بنك الراجحي
+label1=رقم السجل التجاري
+combo1_label=إسم الشركة باللغة الإنجليزية
+textbox5_label=إسم الشركة باللغة العربية
+textbox166_label=الرقم الوطني الموحد
+MSB_SEARCH_BUTTON=بحث
+button5=حذف
+button2=سحب البيانات
+textbox3_label=رقم الطلب
+
+
+

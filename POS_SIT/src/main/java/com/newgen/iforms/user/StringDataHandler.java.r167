@@ -1,0 +1,2135 @@
+package com.newgen.iforms.user;
+
+import java.io.*;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
+//SK
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
+import com.newgen.iforms.custom.IFormReference;
+import com.newgen.integration.GetXML;
+import com.newgen.integration.SocketConnector;
+import com.newgen.mvcbeans.model.wfobjects.WDGeneralData;
+import com.newgen.omni.jts.cmgr.XMLParser;
+import com.newgen.wfdesktop.xmlapi.WFXmlList;
+import com.newgen.wfdesktop.xmlapi.WFXmlResponse;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JsonArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class StringDataHandler extends POSCommon {
+	Logger logger = Logger.getLogger(StringDataHandler.class);
+
+	public String stringHandler(IFormReference iformObj, String control, String stringdata) {
+		logger.info("inside stringHandler method @@@@@");
+		String callName = "";
+		String responseXML;
+		boolean SetPQList_flag=false;
+		// Logger.getLogger()
+
+		if (control.equalsIgnoreCase("setRoutingLevel")) {
+			logger.info("Inside stringHandler function");
+			return setRoutingLevel(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("AddToDecisionHistoryGrid")) {
+			logger.info("inside Decision function choice");
+			return addToDecisionHistoryGrid(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fetchTHIQAH")) {
+			logger.info("Inside Fetch Thiqah button");
+			callName = "GetCrInfobyCrNo";
+			// responseXML = createRequestXML(iformObj, callName);
+			// setResponseData(iformObj, callName, responseXML);
+			return "";
+		} else if (control.equalsIgnoreCase("createDisbursementWI")) {
+			logger.info("inside create Disbursement WI details");
+			return createDisbursementWI(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fillStatementData")) {
+			logger.info("inside fill statement data");
+			return fillStatementData(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fillCTFMSBData")) {
+			logger.info("inside fillCTFMSBData function ");
+			return fillCTFMSBData(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fillTerminalId")) {
+			logger.info("inside fillTerminalId function ");
+			return fillTerminalId(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fillPOSdetails")) {
+			logger.info("inside fillPOSdetails function ");
+			return fillPOSdetails(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("SetPQList")) {
+			logger.info("inside SetPQList function ");
+			return SetPQList(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fillTrassetData")) {
+			logger.info("inside fillTrassetData function ");
+			return fillTrassetData(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("fetchSIMAH")) {
+			logger.info("inside fetchSIMAH function ");
+			return fillSIMAHData(iformObj, stringdata);
+		} else if (control.equalsIgnoreCase("ToConvertHijriDate")) {
+			logger.info("inside ToConvertHijriDate function ");
+			return ConvertHijriDate(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("calculateProfitPercentage")) {
+			logger.info("inside calculateProfitPercentage function ");
+			return calculateProfitPercentage(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("generateAmmortization")) {
+			logger.info("inside generateAmmortization function ");
+			return generateAmmortization(iformObj, stringdata);
+		}
+		// ashutosh-start
+		else if (control.equalsIgnoreCase("template_gen_btn")) {
+			logger.info("111111PRINT_CLIENT_APP_FORM");
+			try {
+				logger.info("inside try block");
+				return generateTemplate(iformObj, stringdata);
+			} catch (Exception e) {
+
+				e.getMessage();
+			}
+		}else if (control.equalsIgnoreCase("document_upload")) {
+			logger.info("inside java control of @@@ document_upload ");
+			return Documentgrid(iformObj, stringdata);
+		}/*else if (control.equalsIgnoreCase("CallCommodityPurchase")) {
+			logger.info("inside COMMODITY Purchase ");
+			return CallCommodityPurchase(iformObj, stringdata);
+		}*/
+		else if (control.equalsIgnoreCase("CallContractSimulation")) {
+			logger.info("inside CallContractSimulation call ");
+			return CallContractSimulation(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("MSBContractMngRq")) {
+			logger.info("inside MSBContractMngRq call to stipulate master contract ");
+			return MSBContractMngRq(iformObj, stringdata);
+		}
+		else if (control.equalsIgnoreCase("CallRepaymntAccCreation")) {
+			logger.info("inside COMMODITY Purchase");
+			return CallRepaymntAccCreation(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("relatedpartyfetchCIC")) {
+			logger.info("inside relatedpartyfetchCIC function");
+			return relatedpartyfetchCIC(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("fillMoveAccGrid")) {
+			logger.info("inside fillMoveAccGrid function ");
+			return fillMoveAccGrid(iformObj, stringdata);
+		}/*else if (control.equalsIgnoreCase("AdvanceListViewTest")) {
+			logger.info("inside AdvanceListViewTest");
+			return AdvanceListViewTest(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("AdvanceListViewTest_2")) {
+			logger.info("inside AdvanceListViewTest");
+			return AdvanceListViewTest_2(iformObj, stringdata);
+		}*/
+		else if (control.equalsIgnoreCase("CallMSBLimitMng")) {
+			logger.info("inside Application Data ");
+			return CallMSBLimitMng(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("test3check")) {
+			logger.info("inside test3check function ");
+			return test3check(iformObj, stringdata);
+		}
+		else if (control.equalsIgnoreCase("fetchBankAccount")) {
+			logger.info("inside fetchBankAccount function ");
+			return fetchBankAccount(iformObj, stringdata);
+		}
+		else if (control.equalsIgnoreCase("retrurnMax_and_Min_rate")) {
+			logger.info("inside retrurnMax_and_Min_rate function ");
+			return return_max_min_rate(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("CallShortCICMng")) {
+			logger.info("inside CallShortCICMng call ");
+			return CallShortCICMng(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("fillNoOfExceptionAndAlerts")) {
+			logger.info("inside fillNoOfExceptionAndAlerts function ");
+			return fillNoOfExceptionAndAlerts(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("calculateLosAppNum")) {
+			logger.info("inside calculateLosAppNum function ");
+			return calculateLosAppNum(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("isarabic")) {
+			logger.info("inside isarabic function ");
+			return isarabic(iformObj, stringdata);
+		}else if (control.equalsIgnoreCase("retrurnMax_and_Min_Amount")) {
+			logger.info("inside retrurnMax_and_Min function ");
+			return return_max_min_amount(iformObj, stringdata);
+		}
+		/*
+		}else if (control.equalsIgnoreCase("CallMSBLimitInq")) {
+			logger.info("inside MSB Limit Inq ");
+			return CallMSBLimitInq(iformObj, stringdata);
+		}*/
+		// ashutosh-end
+
+		return stringdata;
+	}
+	
+	private String return_max_min_amount(IFormReference iformObj, String stringdata) {
+		logger.info("+++++++++++++ we are inside max and min function ++++++++++++++");
+		String product_category=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_PRODUCT_CATEGORY");
+		String request_type=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_REQUEST_TYPE");
+		String cutomer_category=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_CUSTOMER_CATEGORY");
+		String maxamt = "";
+		String minamt = "";
+		try {
+			String query = "SELECT max(Max_Amount), min(Min_Amount) FROM NG_MAST_POS_PRODUCT A,NG_MAST_POS_FEE B WHERE A.FeeID=B.Fees_ID AND a.CustCategoryID=b.Scheme_ID AND A.Product=(SELECT CODE FROM NG_MAST_PRODUCT WHERE PRODUCT_CATEGORY = '"+product_category+"') AND a.custcategoryID=(SELECT CODE FROM NG_MAST_CUSTOMER WHERE customer_CATEGORY = '"+cutomer_category+"') AND a.request_type='"+request_type+"' ";
+			logger.info("To select min and max value query is "+query);
+			List<List<String>> result = iformObj.getDataFromDB(query);
+			if(result.size()>0)
+			{
+				maxamt = (String) result.get(0).get(0);
+				minamt = (String) result.get(0).get(1);
+			}
+		}
+		catch(Exception e) {
+			logger.info("Exception occurred: retrurnMax_and_Min "+e);
+		}
+		String minMaxData = maxamt+"@"+minamt;
+		logger.info("min max data String ============> "+minMaxData);
+
+		return minMaxData;
+	}
+	
+	private String calculateLosAppNum(IFormReference iformObj, String stringdata) 
+	{
+		String query="SELECT NEXT VALUE FOR SEQ_LOS_APPLICATION_NUMBER AS LOSAPPLICATIONNUMBER";
+		List<List<String>> los_app_num_list = iformObj.getDataFromDB(query);
+		String los_app_num="";
+		if(los_app_num_list.size()>0)
+		{
+			los_app_num=los_app_num_list.get(0).get(0);
+		}
+		int no_of_zeroes=10-los_app_num.length();
+	    for(int i=0;i<no_of_zeroes;i++)
+		{
+	    	los_app_num='0'+los_app_num;
+	    }
+		setControlValue(iformObj,"LOS_APP_NUM",los_app_num);
+		//dbquery="UPDATE NG_POS_EXTTABLE SET LOS_APP_NUM='"+los_app_num+"' WHERE WI_NAME='"+processInstanceID+"'";
+		//logger.info("Query to update disbursal bank name from search screen is "+dbquery);
+		//saveDataInDB(iformObj, dbquery);
+		logger.info("Setting los application number as "+los_app_num);
+		return los_app_num;
+	}
+	private String fillNoOfExceptionAndAlerts(IFormReference iformObj, String stringdata) {
+		try
+		{
+			String wi_name=getWorkitemName(iformObj);
+			String query="SELECT COUNT(PQ_CATEGORY) FROM NG_POS_PQLIST_STATUS_GRID WHERE PQ_CATEGORY='Alert' AND WI_NAME='"+wi_name+"' AND PQ_STATUS<>'Pass'  ";
+			List<List<String>> alert_exception_count = iformObj.getDataFromDB(query);
+			String no_of_exceptions="0",no_of_alerts="0";
+			if(alert_exception_count.size()>0)
+			{
+				no_of_alerts=alert_exception_count.get(0).get(0);
+			}
+			setControlValue(iformObj,"Q_NG_POS_DECISION_TOTAL_ALERTS", no_of_alerts);
+			
+			query="SELECT COUNT(PQ_CATEGORY) FROM NG_POS_PQLIST_STATUS_GRID WHERE PQ_CATEGORY='Exception' AND WI_NAME='"+wi_name+"' AND PQ_STATUS<>'Pass'  ";
+			alert_exception_count = iformObj.getDataFromDB(query);
+			if(alert_exception_count.size()>0)
+			{
+				no_of_exceptions=alert_exception_count.get(0).get(0);
+			}
+			setControlValue(iformObj,"Q_NG_POS_DECISION_TOTAL_EXCEPTIONS", no_of_exceptions);
+			
+			logger.info("Inside ");
+			
+		}
+		catch (Exception e)
+		{
+			logger.info("Exception occurred: fillNoOfExceptionAndAlerts ");
+		}
+		return "fillNoOfExceptionAndAlerts executed successfully";
+	}
+
+	private String CallShortCICMng(IFormReference iformObj, String stringdata) {
+		// TODO Auto-generated method stub
+		logger.info("coming call name  " +stringdata);
+		if(stringdata.equalsIgnoreCase("Company")) //Company
+		{
+			String callName = "ShortCICMng_Corporate";
+			logger.info("inside company det" +callName +"stringdata" +stringdata);
+			String responseXML = createRequestXML_2(iformObj, callName);
+			logger.info("response xml" +responseXML );
+			JSONObject jobj = setResponseData(iformObj, callName, responseXML);
+			
+			for(Iterator iterator = jobj.keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					logger.info("Values set for"+key+" are "+jobj.get(key).toString());
+					setControlValue(iformObj, key, jobj.get(key).toString());
+				}
+						
+		}
+		else if(stringdata.equalsIgnoreCase("Individual")) //Individual
+		{
+			String callName = "ShortCICMng_Person";
+			String responseXML = createRequestXML_2(iformObj, callName);
+			JSONObject jobj = setResponseData(iformObj, callName, responseXML);
+			logger.info("inside indivi details");
+			for(Iterator iterator = jobj.keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					logger.info("Values set for"+key+" are "+jobj.get(key).toString());
+					setControlValue(iformObj, key, jobj.get(key).toString());
+				}
+		}
+		return "calling short CIC";
+	}
+
+
+	
+	private String return_max_min_rate(IFormReference iformObj, String stringdata) {
+		logger.info("+++++++++++++ we are inside max and min function ++++++++++++++");
+		// max percantage
+		String product_category=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_PRODUCT_CATEGORY");
+		String customer_category=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_CUSTOMER_CATEGORY");
+		String request_type=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_REQUEST_TYPE");
+		String campaign=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_CAMPAIGN");
+		String tenure=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_TENURE");
+		String requested_amt=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_REQ_AMNT_SAR");
+		
+		if(requested_amt==null || requested_amt=="")
+		{
+			requested_amt="0";
+		}
+		
+		String query="SELECT Max_Rate,Min_Rate FROM NG_MAST_POS_PRODUCT A,NG_MAST_POS_FEE B WHERE A.FeeID=B.Fees_ID AND a.CustCategoryID=b.Scheme_ID AND A.Product=(SELECT CODE FROM NG_MAST_PRODUCT WHERE PRODUCT_CATEGORY = '"+product_category+"') AND a.custcategoryID=(SELECT CODE FROM NG_MAST_CUSTOMER WHERE customer_CATEGORY = '"+customer_category+"') AND a.request_type='"+request_type+"' AND a.campaign='"+campaign+"' AND a.max_tenure>='"+tenure+"' AND a.max_amount>="+requested_amt+" AND a.min_amount<="+requested_amt+" ";
+		
+		logger.info("+++++++++++++ we are inside max and min function ++++++++++++++");
+		String maxamt = "0";
+		String minamt = "0";
+		
+		try {
+			List<List<String>> result = iformObj.getDataFromDB(query);
+				if(result.size()>0)
+				{
+					maxamt = (String) result.get(0).get(0);
+					minamt = (String) result.get(0).get(1);
+				}	
+			}
+			
+		catch(Exception e) {
+			logger.info("Exception occurred: retrurnMax_and_Min "+e);
+		}
+		String minMaxData = maxamt+"@"+minamt;
+		logger.info("min max data String ============> "+minMaxData);
+		
+		return minMaxData;
+	}
+	
+	private String fetchBankAccount(IFormReference iformObj, String stringdata) {
+		try
+		{
+		iformObj.clearTable("BANK_ACCNT_DET_GRID");
+		String workitem=getWorkitemName(iformObj);
+		String query="SELECT DISTINCT(ACC_NO),BANK_NAME FROM NG_POS_STMTDATA_ACCMOVMNT_GRID WHERE WI_NAME='"+workitem+"' ";
+		logger.info("Query to fetch bank account details is"+query);
+		List<List<String>> bank_details = iformObj.getDataFromDB(query);
+		JSONArray jsonArray =new JSONArray();
+		JSONObject jsonobject;
+		for(List<String> temp:bank_details)
+		{
+			if(temp.size()==2)
+			{
+				jsonobject=new JSONObject();
+				jsonobject.put("Bank Name",temp.get(1));
+				jsonobject.put("Account Number",temp.get(0));
+				jsonobject.put("Closing BalanceS","");
+				jsonobject.put("Status ","Active");
+				jsonobject.put("Relationship Since","");
+				jsonArray.add(jsonobject);
+			}
+		}
+		
+		iformObj.addDataToGrid("BANK_ACCNT_DET_GRID",jsonArray);
+		
+		}
+		catch (Exception e)
+		{
+			logger.info("Exception occurred: fetchBankAccount"+e);
+		}
+		return "fetchBankAccount executed successfully";
+	}
+	private String test3check(IFormReference iformObj, String stringdata) {
+	
+		JSONArray jsonArray =new JSONArray();
+		JSONObject parentObj;
+		parentObj = new JSONObject();
+		parentObj.put("qAdvancelist1807_text", "5000");
+		JSONArray chilGridArray=new JSONArray();
+		JSONObject childGridRowObject=new JSONObject();
+		childGridRowObject.put("childtxt","childtext");
+		childGridRowObject.put("insertionorderid","0");
+		chilGridArray.add(childGridRowObject);
+		parentObj.put("table3_table4",chilGridArray);
+		parentObj.put("INSERTIONORDERID","0");
+		jsonArray.add(parentObj);
+		iformObj.addDataToGrid("table3", jsonArray);
+
+		return "test3check success";
+	}
+	/*
+	private String AdvanceListViewTest(IFormReference iformObj, String stringdata) {
+		 logger.info("Inside AdvanceListViewTest");
+		 JSONArray jsonArray=new JSONArray();
+		 JSONObject obj=new JSONObject();
+		 obj.put("Q_NG_POS_RELATED_PARTY_GRID_NG_POS_RELATED_PARTY_DETAILS_CIC", "112");
+		 obj.put("Q_NG_POS_RELATED_PARTY_GRID_NG_POS_INDIVIDUAL_DETAILS_GENDER", "MAle");
+		 //obj.put("FOUR", "2");
+		 //obj.put("FIVE", "2");
+		 jsonArray.add(obj);
+		 iformObj.addDataToGrid("table85",jsonArray);
+		 logger.info("Inside AdvanceListViewTest and jsonarray is "+jsonArray);
+		return "AdvanceListViewTest returns sucess";
+	}
+	
+	private String AdvanceListViewTest_2(IFormReference iformObj, String stringdata) {
+		 logger.info("Inside AdvanceListViewTest");
+		 JSONArray jsonArray=new JSONArray();
+		 JSONObject obj=new JSONObject();
+		 obj.put("THREE", "112");
+		 obj.put("FIVE", "1212");
+		 //obj.put("FOUR", "2");
+		 //obj.put("FIVE", "2");
+		 jsonArray.add(obj);
+		 iformObj.addDataToGrid("table10049",jsonArray);
+		 logger.info("Inside AdvanceListViewTest and jsonarray is "+jsonArray);
+		return "AdvanceListViewTest returns sucess";
+	}
+	*/
+	private String relatedpartyfetchCIC(IFormReference iformObj, String stringdata) {
+		
+		String callName = "MSBEntityDataInq"; //For CRS details
+		JSONObject jsonobj = new JSONObject();
+		
+		try
+		{
+			logger.info("Inside createRequestXML Function and callName is " + callName);
+			String tagName = "_TagName";
+			
+			String request_prefix=GetXML.getProp().getProperty(callName+"_RequestPrefix");
+			if(request_prefix.equals(null))
+			{
+				request_prefix="";
+			}
+			logger.info("Request prefix is "+request_prefix+"please check");
+			
+			String header_tags=GetXML.getProp().getProperty(callName+"_Header");
+			String []header_tags_arry=header_tags.split(",");
+			
+			logger.info("Header tags are "+header_tags);
+			JSONObject jsonobj_header=new JSONObject();
+			for(String temp:header_tags_arry)
+			{
+				String[] hash_split=temp.split("#");
+				jsonobj_header.put(hash_split[0],hash_split[1]);
+			}
+			
+			logger.info("JSOn object is "+jsonobj_header);
+		
+			String tagNames = GetXML.getProp().getProperty(callName + tagName);
+			logger.info(tagNames);
+			String[] tags = tagNames.split(",");
+	
+			String requestXML = readDummyRequest(callName);
+	
+			XMLParser parser = new XMLParser(requestXML);
+			
+	
+			for (String tag : tags) {
+				String tagValue = parser.getValueOf(request_prefix+tag);
+				logger.info("tag values are"+tagValue);
+				if(tagValue.contains("header~"))
+				{
+					try {
+						
+					if(tagValue.split("~")[1].equalsIgnoreCase("UUID"))
+					{
+						parser.changeValue(request_prefix+tag, java.util.UUID.randomUUID().toString());
+					}
+					else
+					{
+					String value=(String) jsonobj_header.get(tagValue.split("~")[1]);
+					logger.info("Value to be replaced by jsonobj_header is "+value);
+					parser.changeValue(request_prefix+tag, value);
+					}
+					}
+					catch(Exception e)
+					{
+						logger.info("Exception is "+e);
+					}
+				}
+				if (tagValue.startsWith("formid~")) {
+					String value = (String) iformObj.getValue(tagValue.split("~")[1]);
+					parser.changeValue(request_prefix+tag, value);
+				}
+				
+			}
+			
+			String padded_cic_no= getControlValue(iformObj, "Q_NG_POS_RELATED_PARTY_GRID_NG_POS_RELATED_PARTY_DETAILS_CIC");
+			parser.changeValue(request_prefix+"CICNum",padded_cic_no);
+			System.out.println("RequestXML is :\n" + parser.toString());
+			logger.info("RequestXML is :\n" + parser.toString());
+			String ResponseXML = new SocketConnector().getSocketXMLResponse(parser.toString(), callName,iformObj);
+	
+		
+	
+		String restricted_tags=GetXML.getProp().getProperty(callName+"_RestrictedTags");
+		String []restricted_values=restricted_tags.split(",");
+		for(String temp:restricted_values)
+			ResponseXML=ResponseXML.replace(temp,"");
+	
+		
+		tagName = "_TagNameResponseFetchCIC";	
+		String statuscode=GetXML.getProp().getProperty(callName+"_StatusCode");
+		String []status_code_split=statuscode.split("~");
+		
+
+		tagNames = GetXML.getProp().getProperty(callName + tagName);
+		
+		logger.info(tagNames);
+		tags = tagNames.split(",");
+		
+		parser = new XMLParser(ResponseXML);
+		
+		String status_code_in_response=parser.getValueOf(status_code_split[0]);
+		if(status_code_in_response.equalsIgnoreCase(status_code_split[1]))
+		{
+			for (String tag : tags) {
+				//logger.info("Tag =" + tag);
+				String[] key = tag.split("~");
+				
+				if(key[0].contains("#"))
+				{
+			    		if(!key[0].contains("@"))
+			    		{
+					    	String []parent_child_tags=key[0].split("#");
+					    	logger.info("Length of hash String is "+parent_child_tags.length);
+					    		String result=ResponseXML;
+					    		for(int i=0;i<parent_child_tags.length;i++)
+					    		{
+					    			XMLParser internal_parser=new XMLParser(result);
+					    			result=internal_parser.getValueOf(parent_child_tags[i]);
+					    			logger.info("For "+parent_child_tags[i]+" result is "+result);
+					    		}
+					    		logger.info("Result returned by fillCRSData is"+result);
+					    		jsonobj.put(key[1],result);
+			    		}
+			    		else
+			    		{
+			    			String[] inputTagswithoutRateSign = key[0].split("@");
+					    	String []parent_child_tags=inputTagswithoutRateSign[0].split("#");
+					    	logger.info("Length of hash String is "+parent_child_tags.length);
+					    		String result=ResponseXML;
+					    		for(int i=0;i<parent_child_tags.length;i++)
+					    		{
+					    			XMLParser internal_parser=new XMLParser(result);
+					    			result=internal_parser.getValueOf(parent_child_tags[i]);
+					    			logger.info("For "+parent_child_tags[i]+" result is "+result);
+					    		}
+					    	logger.info("Result returned by fillCRSData with @ is"+result);
+					    	String returned_value="",query="";
+					    	try {
+			    				query="SELECT PARAM_VALUE FROM NG_MAST_POS_TAG_KEY_VALUE_CONFIG WHERE PARAM_KEY='"+result+"' AND TAG_IDENT='"+inputTagswithoutRateSign[1]+"' AND ISACTIVE='Y'" ;
+						    	logger.info("Query to replace key with value is"+query);
+				    			List<List<String>> code_values = iformObj.getDataFromDB(query);
+				    			
+					    			if(code_values.size()>0)
+					    			{
+					    				returned_value=code_values.get(0).get(0);
+					    			}
+			    			}
+			    			catch(Exception e)
+			    			{
+			    				logger.info("Exception occurred: setResponseData: Database Query "+query+" and stack trace is"+e);
+			    				
+			    			}
+					    	
+			    			jsonobj.put(key[1], returned_value);
+			    		}
+				}
+				else
+				{	
+					if(!key[0].contains("@"))
+					{
+						String tagValue = parser.getValueOf(key[0]);
+						jsonobj.put(key[1], tagValue);
+					}
+					else
+					{
+						String []inputTagswithoutRateSign=key[0].split("@");
+						String tagValue = parser.getValueOf(inputTagswithoutRateSign[0]);
+		    			String returned_value="",query="";
+		    			try {
+			    			query="SELECT PARAM_VALUE FROM NG_MAST_POS_TAG_KEY_VALUE_CONFIG WHERE PARAM_KEY='"+tagValue+"' AND TAG_IDENT='"+inputTagswithoutRateSign[1]+"' AND ISACTIVE='Y'" ;
+			    			logger.info("Query to replace key with value is"+query);
+			    			List<List<String>> code_values = iformObj.getDataFromDB(query);
+			    			
+			    			if(code_values.size()>0)
+				    			{
+				    				returned_value=code_values.get(0).get(0);
+				    			}
+		    			}
+		    			catch(Exception e)
+		    			{
+		    				logger.info("Exception occurred: setResponseData: Database Query "+query+" and stack trace is"+e);
+		    				
+		    			}
+		    			//returned_value = returned_value.substring(1, returned_value.length() - 1);
+		    			jsonobj.put(key[1], returned_value);
+					}
+				}
+				
+			}
+		}
+			else
+			{
+				logger.info("For "+callName+" Status code returned from response is not success ");
+			}	
+		}
+		catch(Exception e)
+		{
+			logger.info("Exception occurred: createRequestXML "+e);
+		}
+		
+		for(Iterator iterator = jsonobj.keySet().iterator(); iterator.hasNext();) {
+		    String key = (String) iterator.next();
+		    
+		    	logger.info("Values set for"+key+" are "+jsonobj.get(key).toString());
+		    	setControlValue(iformObj, key, jsonobj.get(key).toString());
+		}
+		
+		return "relatedpartyfetchCIC called Successfully";
+	}
+
+	
+	private String fillMoveAccGrid(IFormReference iformObj, String stringdata) {
+		logger.info("String data to fill fillMoveAccGrid is" + stringdata);
+		String[] value_split = stringdata.split("#");
+		String acc_id = getControlValue(iformObj, value_split[0]);
+		iformObj.clearTable(value_split[1]);
+		if (acc_id.equalsIgnoreCase("All")) {
+			logger.info("TerminalID to fillMoveAccGrid is " + acc_id + "and table id is is" + value_split[1]);
+			String wi_name = getWorkitemName(iformObj);
+			JSONArray jsonarr = new JSONArray();
+			JSONObject jsonobj = null;
+
+			String query = "SELECT FROM_DATE,TO_DATE,BANK_NAME,ACC_NO,DEPOSIT,WITHDRAWAL,AVG_BAL,NEG_BAL,ACC_MONTH,THROUGHPUT FROM NG_POS_STMTDATA_ACCMOVMNT_GRID WHERE WI_NAME='"
+					+ wi_name + "' ";
+			List<List<String>> stmt_data = iformObj.getDataFromDB(query);
+			for (List<String> value : stmt_data) {
+				jsonobj = new JSONObject();
+				jsonobj.put("From Date", value.get(0));
+				jsonobj.put("To Date", value.get(1));
+				jsonobj.put("Bank Name", value.get(2));
+				jsonobj.put("Account Number", value.get(3));
+				jsonobj.put("Deposit", value.get(4));
+				jsonobj.put("Withdrawal", value.get(5));
+				jsonobj.put("Average Balance", value.get(6));
+				jsonobj.put("Negative Balance", value.get(7));
+				jsonobj.put("Month", value.get(8));
+				jsonobj.put("Throughput", value.get(9));
+				jsonarr.add(jsonobj);
+			}
+
+			logger.info("JSON Array to fill stmt details is" + jsonobj);
+			iformObj.addDataToGrid(value_split[1], jsonarr);
+		} else {
+			logger.info("TerminalID to fillMoveAccGrid is " + acc_id + "and table id is is" + value_split[1]);
+			String wi_name = getWorkitemName(iformObj);
+			JSONArray jsonarr = new JSONArray();
+			JSONObject jsonobj = null;
+
+			String query = "SELECT FROM_DATE,TO_DATE,BANK_NAME,ACC_NO,DEPOSIT,WITHDRAWAL,AVG_BAL,NEG_BAL,ACC_MONTH,THROUGHPUT FROM NG_POS_STMTDATA_ACCMOVMNT_GRID WHERE ACC_NO='"
+					+ acc_id + "' AND WI_NAME='" + wi_name + "' ";
+			List<List<String>> stmt_data = iformObj.getDataFromDB(query);
+			for (List<String> value : stmt_data) {
+				jsonobj = new JSONObject();
+				jsonobj.put("From Date", value.get(0));
+				jsonobj.put("To Date", value.get(1));
+				jsonobj.put("Bank Name", value.get(2));
+				jsonobj.put("Account Number", value.get(3));
+				jsonobj.put("Deposit", value.get(4));
+				jsonobj.put("Withdrawal", value.get(5));
+				jsonobj.put("Average Balance", value.get(6));
+				jsonobj.put("Negative Balance", value.get(7));
+				jsonobj.put("Month", value.get(8));
+				jsonobj.put("Throughput", value.get(9));
+				jsonarr.add(jsonobj);
+			}
+
+			logger.info("JSON Array to fill stmt details is" + jsonobj);
+			iformObj.addDataToGrid(value_split[1], jsonarr);
+		}
+		return "Successfully loaded fillMoveAccGrid";
+	}
+
+
+	/*
+	//By Mohit Kumar
+	private String CallCommodityPurchase(IFormReference iformObj, String stringdata) {
+
+		String callName = "MSBCommodityMng"; //For ammortization details
+		String responseXML = createRequestXML(iformObj, callName);
+		JSONObject jobj = setResponseData(iformObj, callName, responseXML);
+
+		for(Iterator iterator = jobj.keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				logger.info("Values set for"+key+" are "+jobj.get(key).toString());
+				setControlValue(iformObj, key, jobj.get(key).toString());
+			}
+		
+		return "Call COmmodity Purchse Call Successfully";
+	}
+	*/
+	
+	private String CallMSBLimitMng(IFormReference iformObj, String stringdata) {
+		// TODO Auto-generated method stub
+		// ======= MSB Limit Mng call starts
+		// ======= MSB Limit Mng call starts
+		logger.info("MSB Limit Mng call starts, starts create");
+		String callName = "MSBLimitMng_Create"; //For ammortization details
+		logger.info("Callname:::::::"+callName);
+		String responseXML = createRequestXML(iformObj, callName);
+		JSONObject MSBLimitMng_obj = setResponseData(iformObj, callName, responseXML);
+		
+		for(Iterator iterator = MSBLimitMng_obj.keySet().iterator(); iterator.hasNext();)
+		{
+		String key = (String) iterator.next();
+		logger.info("Values set for"+key+" are "+MSBLimitMng_obj.get(key).toString());
+		setControlValue(iformObj, key, MSBLimitMng_obj.get(key).toString());
+		}
+		String T24LimitRef= (String) iformObj.getValue("T24_LIMIT_REF");
+		logger.info("T24 limit ref no is "+T24LimitRef);
+		callName = "MSBLimitMng_Enable"; //For ammortization details
+		//responseXML = createRequestXML(iformObj, callName);
+		
+			logger.info("Inside createRequestXML Function and callName is " + callName);
+			String tagName = "_TagName";
+			
+			String request_prefix=GetXML.getProp().getProperty(callName+"_RequestPrefix");
+			if(request_prefix.equals(null))
+			{
+				request_prefix="";
+			}
+			logger.info("Request prefix is "+request_prefix+"please check");
+			
+			String header_tags=GetXML.getProp().getProperty(callName+"_Header");
+			String []header_tags_arry=header_tags.split(",");
+			
+			logger.info("Header tags are "+header_tags);
+			JSONObject jsonobj_header=new JSONObject();
+			for(String temp:header_tags_arry)
+			{
+				String[] hash_split=temp.split("#");
+				jsonobj_header.put(hash_split[0],hash_split[1]);
+			}
+			
+			logger.info("JSOn object is "+jsonobj_header);
+		
+			String tagNames = GetXML.getProp().getProperty(callName + tagName);
+			logger.info(tagNames);
+			String[] tags = tagNames.split(",");
+	
+			String requestXML = readDummyRequest(callName);
+	
+			XMLParser parser = new XMLParser(requestXML);
+			
+	
+			for (String tag : tags) {
+				String tagValue = parser.getValueOf(request_prefix+tag);
+				logger.info("tag values are"+tagValue);
+				if(tagValue.contains("header~"))
+				{
+					try {
+						
+					if(tagValue.split("~")[1].equalsIgnoreCase("UUID"))
+					{
+						parser.changeValue(request_prefix+tag, java.util.UUID.randomUUID().toString());
+					}
+					else
+					{
+					String value=(String) jsonobj_header.get(tagValue.split("~")[1]);
+					logger.info("Value to be replaced by jsonobj_header is "+value);
+					parser.changeValue(request_prefix+tag, value);
+					}
+					}
+					catch(Exception e)
+					{
+						logger.info("Exception is "+e);
+					}
+				}
+				if (tagValue.startsWith("formid~")) {
+					String value = (String) iformObj.getValue(tagValue.split("~")[1]);
+					parser.changeValue(request_prefix+tag, value);
+				}
+				
+			}
+			
+			parser.changeValue(request_prefix+"T24LimitRef", T24LimitRef);
+			System.out.println("RequestXML is :\n" + parser.toString());
+			logger.info("RequestXML for enable limtit after appending T24refno is :\n" + parser.toString());
+			responseXML = new SocketConnector().getSocketXMLResponse(parser.toString(), callName,iformObj);
+		JSONObject MSBLimitMngEnable_obj = setResponseData(iformObj, callName, responseXML);
+		for(Iterator iterator = MSBLimitMngEnable_obj.keySet().iterator(); iterator.hasNext();)
+		{
+		String key = (String) iterator.next();
+		logger.info("Values set for"+key+" are "+MSBLimitMngEnable_obj.get(key).toString());
+		setControlValue(iformObj, key, MSBLimitMngEnable_obj.get(key).toString());
+		}
+		return "Calling MSB Limit Mng";
+		}
+	
+	
+	private String CallMSBCustMngRq(IFormReference iformObj, String stringdata) {
+		String callName = "MSBCustMng"; //For Prospect Customer
+		logger.info("MSBCustMngRq@@@@ " + callName);
+		String responseXML = createRequestXML(iformObj, callName);
+		logger.info("CallMSBCustMngRq@@@@response " +responseXML);
+		JSONObject CallMSBCustMngRq_obj = setResponseData(iformObj, callName, responseXML);
+		for(Iterator iterator = CallMSBCustMngRq_obj.keySet().iterator(); iterator.hasNext();)
+		{
+		String key = (String) iterator.next();
+		logger.info("Values set for"+key+" are "+CallMSBCustMngRq_obj.get(key).toString());
+		setControlValue(iformObj, key, CallMSBCustMngRq_obj.get(key).toString());
+		}
+		return "CallMSBCustMngRq Called";
+		}
+	
+	private String MSBContractMngRq(IFormReference iformObj, String stringdata) {
+		String callName = "MSBContractMng"; //For master stipulation at approved sales stage.
+		String responseXML = "";
+		try
+		{
+			logger.info("Inside createRequestXML Function and callName is " + callName);
+			String tagName = "_TagName";
+			
+			String request_prefix=GetXML.getProp().getProperty(callName+"_RequestPrefix");
+			if(request_prefix.equals(null))
+			{
+				request_prefix="";
+			}
+			logger.info("Request prefix is "+request_prefix+"please check");
+			
+			String header_tags=GetXML.getProp().getProperty(callName+"_Header");
+			String []header_tags_arry=header_tags.split(",");
+			
+			logger.info("Header tags are "+header_tags);
+			JSONObject jsonobj_header=new JSONObject();
+			for(String temp:header_tags_arry)
+			{
+				String[] hash_split=temp.split("#");
+				jsonobj_header.put(hash_split[0],hash_split[1]);
+			}
+			
+			logger.info("JSOn object is "+jsonobj_header);
+		
+			String tagNames = GetXML.getProp().getProperty(callName + tagName);
+			logger.info(tagNames);
+			String[] tags = tagNames.split(",");
+	
+			String requestXML = readDummyRequest(callName);
+	
+			XMLParser parser = new XMLParser(requestXML);
+			
+	
+			for (String tag : tags) {
+				String tagValue = parser.getValueOf(request_prefix+tag);
+				logger.info("tag values are"+tagValue);
+				if(tagValue.contains("header~"))
+				{
+					try {
+						
+					if(tagValue.split("~")[1].equalsIgnoreCase("UUID"))
+					{
+						parser.changeValue(request_prefix+tag, java.util.UUID.randomUUID().toString());
+					}
+					else
+					{
+					String value=(String) jsonobj_header.get(tagValue.split("~")[1]);
+					logger.info("Value to be replaced by jsonobj_header is "+value);
+					parser.changeValue(request_prefix+tag, value);
+					}
+					}
+					catch(Exception e)
+					{
+						logger.info("Exception is "+e);
+					}
+				}
+				if (tagValue.startsWith("formid~")) {
+					String value = (String) iformObj.getValue(tagValue.split("~")[1]);
+					parser.changeValue(request_prefix+tag, value);
+				}
+				
+			}
+			//logger.info("Handling special cases");
+			String padded_cic_no=(String) iformObj.getValue("PADDED_CIC_NO");
+			logger.info("CIC_No after appending zeroes are "+padded_cic_no);
+			parser.changeValue(request_prefix+"alr1:CICNum",padded_cic_no);
+			parser.changeValue(request_prefix+"CICNum",padded_cic_no);
+			
+			String customer_type=parser.getValueOf(request_prefix+"CustType");
+			if(customer_type.equalsIgnoreCase("ARB POS Customer"))
+				parser.changeValue(request_prefix+"CustType", "1");
+			else if(customer_type.equalsIgnoreCase("Non-ARB POS Customer"))
+				parser.changeValue(request_prefix+"CustType", "2");
+			else if (customer_type.equalsIgnoreCase("Non POS"))
+				parser.changeValue(request_prefix+"CustType", "3");
+			
+			String frequency=getControlValue(iformObj, "Q_NG_POS_APPLICATION_DATA_FREQUENCY");
+			//String no_of_installments=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_NO_OF_INSTALLMENT");
+			String frequency_value="";
+			//parser.changeValue(request_prefix+"InstallmentFrequency","e"+no_of_installments+"M");
+			logger.info("InstallmentFrequency before change is "+frequency);
+			if(frequency.equalsIgnoreCase("Monthly"))
+			{
+				frequency_value="e1m";
+			}else if(frequency.equalsIgnoreCase("Quarterly"))
+			{
+				frequency_value="e3m";
+			}else if(frequency.equalsIgnoreCase("Half-Yearly"))
+			{
+				frequency_value="e6m";
+			}else if(frequency.equalsIgnoreCase("Annually"))
+			{
+				frequency_value="e12m";
+			}
+			frequency_value="e0Y "+frequency_value+" e0W e0D e0F";
+			parser.changeValue(request_prefix+"InstallmentFrequency",frequency_value);	
+			logger.info("InstallmentFrequency after change is "+frequency_value);
+			
+			String grace_in_month=parser.getValueOf(request_prefix+"GraceInMonth");
+			String tag_grace_in_month;
+			if(!grace_in_month.equalsIgnoreCase(""))
+			{
+				//logger.info("Grace period is not empty");
+			    Integer month=Integer.parseInt(grace_in_month)+1;
+				//logger.info("Month is : "+month);
+				tag_grace_in_month="R_START + "+month.toString()+"M";
+				parser.changeValue(request_prefix+"GraceInMonth", tag_grace_in_month);
+				//logger.info("Grace period in month is : "+tag_grace_in_month);
+			}else
+			{
+				tag_grace_in_month="R_START +";
+				parser.changeValue(request_prefix+"GraceInMonth", tag_grace_in_month);
+			}
+				
+			
+			/*if(!grace_period_captialization.equalsIgnoreCase("")) // Uncomment for grace_period_captialization handling
+			{
+				parser.changeValue(request_prefix+"GracePeriodCapitalization","R_MATURITY +"+grace_period_captialization);
+			}*/
+			
+			String tenure=parser.getValueOf(request_prefix+"FinanceTenure");
+			parser.changeValue(request_prefix+"FinanceTenure",tenure+"M");
+			
+			System.out.println("RequestXML for MSBContractMngRq is :\n" + parser.toString());
+			logger.info("RequestXML is :\n" + parser.toString());
+			responseXML = new SocketConnector().getSocketXMLResponse(parser.toString(), callName,iformObj);
+	
+			System.out.println("Response XML is: \n" + responseXML);
+			}
+			catch(Exception e)
+			{
+				
+				logger.info("Exception occurred: createRequestXMLfor MSBContractMngRq "+e.getStackTrace().toString());
+				return "";
+			}
+		
+		JSONObject MSBContractMngRq_obj = setResponseData(iformObj, callName, responseXML);
+		for(Iterator iterator = MSBContractMngRq_obj.keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			logger.info("Values set for"+key+" are "+MSBContractMngRq_obj.get(key).toString());
+			setControlValue(iformObj, key, MSBContractMngRq_obj.get(key).toString());
+		}
+			
+		return "MSBContractMngRq executed Successfully";
+	}
+	
+	private String CallContractSimulation(IFormReference iformObj, String stringdata) {
+		String prospect_customer_result=CallMSBCustMngRq(iformObj, stringdata); //For Prospect Customer
+		logger.info("Prospect Customer Response is "+prospect_customer_result);	
+		// ============= Contract Simulation Mng =============
+		String callName = "ContractSimulationMng"; //For contract sulation in application data
+		String responseXML = "";// createRequestXML_2(iformObj, callName);
+		try
+		{
+			logger.info("Inside createRequestXML Function and callName is " + callName);
+			String tagName = "_TagName";
+			
+			String request_prefix=GetXML.getProp().getProperty(callName+"_RequestPrefix");
+			if(request_prefix.equals(null))
+			{
+				request_prefix="";
+			}
+			logger.info("Request prefix is "+request_prefix+"please check");
+			
+			String header_tags=GetXML.getProp().getProperty(callName+"_Header");
+			String []header_tags_arry=header_tags.split(",");
+			
+			logger.info("Header tags are "+header_tags);
+			JSONObject jsonobj_header=new JSONObject();
+			for(String temp:header_tags_arry)
+			{
+				String[] hash_split=temp.split("#");
+				jsonobj_header.put(hash_split[0],hash_split[1]);
+			}
+			
+			logger.info("JSOn object is "+jsonobj_header);
+		
+			String tagNames = GetXML.getProp().getProperty(callName + tagName);
+			logger.info(tagNames);
+			String[] tags = tagNames.split(",");
+	
+			String requestXML = readDummyRequest(callName);
+	
+			XMLParser parser = new XMLParser(requestXML);
+			
+	
+			for (String tag : tags) {
+				String tagValue = parser.getValueOf(request_prefix+tag);
+				logger.info("tag values are"+tagValue);
+				if(tagValue.contains("header~"))
+				{
+					try {
+						
+					if(tagValue.split("~")[1].equalsIgnoreCase("UUID"))
+					{
+						parser.changeValue(request_prefix+tag, java.util.UUID.randomUUID().toString());
+					}
+					else
+					{
+					String value=(String) jsonobj_header.get(tagValue.split("~")[1]);
+					logger.info("Value to be replaced by jsonobj_header is "+value);
+					parser.changeValue(request_prefix+tag, value);
+					}
+					}
+					catch(Exception e)
+					{
+						logger.info("Exception is "+e);
+					}
+				}
+				if (tagValue.startsWith("formid~")) {
+					String value = (String) iformObj.getValue(tagValue.split("~")[1]);
+					parser.changeValue(request_prefix+tag, value);
+				}
+				
+			}
+			//logger.info("Handling special cases");
+			String cic_no=parser.getValueOf(request_prefix+"alr1:CICNum");
+			int no_of_zeroes=16-cic_no.length();
+			for(int i=0;i<no_of_zeroes;i++)
+			{
+				cic_no='0'+cic_no;
+			}
+			
+			logger.info("CIC_No after appending zeroes are "+cic_no);
+			parser.changeValue(request_prefix+"alr1:CICNum",cic_no);
+			parser.changeValue(request_prefix+"CICNum",cic_no);
+
+			String customer_type=parser.getValueOf(request_prefix+"CustType");
+			if(customer_type.equalsIgnoreCase("ARB POS Customer"))
+				parser.changeValue(request_prefix+"CustType", "1");
+			else if(customer_type.equalsIgnoreCase("Non-ARB POS Customer"))
+				parser.changeValue(request_prefix+"CustType", "2");
+			else if (customer_type.equalsIgnoreCase("Non POS"))
+				parser.changeValue(request_prefix+"CustType", "3");
+			
+			String frequency=getControlValue(iformObj, "Q_NG_POS_APPLICATION_DATA_FREQUENCY");
+			//String no_of_installments=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_NO_OF_INSTALLMENT");
+			String frequency_value="";
+			//parser.changeValue(request_prefix+"InstallmentFrequency","e"+no_of_installments+"M");
+			logger.info("InstallmentFrequency before change is "+frequency);
+			if(frequency.equalsIgnoreCase("Monthly"))
+			{
+				frequency_value="e1m";
+			}else if(frequency.equalsIgnoreCase("Quarterly"))
+			{
+				frequency_value="e3m";
+			}else if(frequency.equalsIgnoreCase("Half-Yearly"))
+			{
+				frequency_value="e6m";
+			}else if(frequency.equalsIgnoreCase("Annually"))
+			{
+				frequency_value="e12m";
+			}
+			frequency_value="e0Y "+frequency_value+" e0W e0D e0F";
+			parser.changeValue(request_prefix+"InstallmentFrequency",frequency_value);	
+			logger.info("InstallmentFrequency after change is "+frequency_value);
+			
+			String grace_in_month=parser.getValueOf(request_prefix+"GraceInMonth");
+			if(!grace_in_month.equalsIgnoreCase(""))
+			{
+				//logger.info("Grace period is not empty");
+			    Integer month=Integer.parseInt(grace_in_month)+1;
+				//logger.info("Month is : "+month);
+				String tag_grace_in_month="R_START + "+month.toString()+"M";
+				parser.changeValue(request_prefix+"GraceInMonth", tag_grace_in_month);
+				//logger.info("Grace period in month is : "+tag_grace_in_month);
+			}
+			
+			/*if(!grace_period_captialization.equalsIgnoreCase(""))
+			{
+				parser.changeValue(request_prefix+"GracePeriodCapitalization","R_MATURITY +"+grace_period_captialization);
+			}*/
+			
+			String tenure=parser.getValueOf(request_prefix+"FinanceTenure");
+			parser.changeValue(request_prefix+"FinanceTenure",tenure+"M");
+			
+			System.out.println("RequestXML for ContractSimulationMng is :\n" + parser.toString());
+			logger.info("RequestXML is :\n" + parser.toString());
+			responseXML = new SocketConnector().getSocketXMLResponse(parser.toString(), callName,iformObj);
+	
+			System.out.println("Response XML is: \n" + responseXML);
+			
+		}catch(Exception e)
+		{
+			
+			logger.info("Exception occurred: createRequestXMLfor ContractSimulationMng "+e.getStackTrace().toString());
+			return "";
+		}
+	
+		
+		
+		JSONObject ContractSimulation_obj = setResponseData_2(iformObj, callName, responseXML);
+		logger.info("For contract stimulation object is :"+ContractSimulation_obj);
+		String return_string="Success~Contract Simulation executed";
+
+		for(Iterator iterator = ContractSimulation_obj.keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			if(key.equalsIgnoreCase("Error"))
+			{
+				return_string="Error~"+ContractSimulation_obj.get(key).toString();
+			}
+			else
+			{
+				logger.info("Values set for"+key+" are "+ContractSimulation_obj.get(key).toString());
+				setControlValue(iformObj, key, ContractSimulation_obj.get(key).toString());
+			}
+		}
+		return return_string ;
+	}
+
+	private String CallRepaymntAccCreation(IFormReference iformObj, String stringdata) {
+		// TODO Auto-generated method stub
+		// ======= MSB Acc Mng call starts
+		String callName = "MSBAcctMng"; //For ammortization details
+		String responseXML = createRequestXML(iformObj, callName);
+		JSONObject MSBAcctMng_obj = setResponseData(iformObj, callName, responseXML);
+		for(Iterator iterator = MSBAcctMng_obj.keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			logger.info("Values set for"+key+" are "+MSBAcctMng_obj.get(key).toString());
+			setControlValue(iformObj, key, MSBAcctMng_obj.get(key).toString());
+		}
+		return "Calling Repayment Account";
+	}
+	
+	/*
+	private String CallMSBLimitMng(IFormReference iformObj, String stringdata) {
+		// TODO Auto-generated method stub
+		// ======= MSB Limit Mng call starts
+		// ======= MSB Limit Mng call starts
+		String callName = "MSBLimitMng"; //For ammortization details
+		String responseXML = createRequestXML_2(iformObj, callName);
+		JSONObject MSBLimitMng_obj = setResponseData(iformObj, callName, responseXML);
+		for(Iterator iterator = MSBLimitMng_obj.keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			logger.info("Values set for"+key+" are "+MSBLimitMng_obj.get(key).toString());
+			setControlValue(iformObj, key, MSBLimitMng_obj.get(key).toString());
+		}
+		return "Calling MSB Limit Mng";
+	}
+	
+	
+	
+	private String CallMSBLimitInq(IFormReference iformObj, String stringdata) {
+		// TODO Auto-generated method stub
+		// ======= MSB Limit Inq call starts
+		logger.info("Code for MSBLimitInq starts here");
+		String callName = "MSBLimitInq";
+		String responseXML = createRequestXML_2(iformObj, callName);
+		JSONObject MSBLimit_obj = setResponseDataGrid(iformObj, callName, responseXML);
+		List<String> cleared_list = new ArrayList<String>();
+		for (Iterator iterator = MSBLimit_obj.keySet().iterator(); iterator.hasNext();) {
+		String key = (String) iterator.next();
+		logger.info("Key for CallMSBLimitInq table is " + key + "and value is" + MSBLimit_obj.get(key));
+		if (!cleared_list.contains(key)) {
+			iformObj.clearTable(key);
+			cleared_list.add(key);
+		}
+		iformObj.addDataToGrid(key, (JSONArray) MSBLimit_obj.get(key));
+		}
+		return "Calling MSB Limit Inq";
+	}
+	*/
+	private String generateAmmortization(IFormReference iformObj, String stringdata) {
+		/*
+		logger.info("Inside generateAmmortization for search screen");
+		String callName = "ContractAmortizationInq"; //For ammortization details
+		String responseXML = createRequestXML(iformObj, callName);
+		JSONObject return_obj =setResponseDataGrid(iformObj, callName, responseXML);
+		SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat outputFormatter=new SimpleDateFormat("dd-MM-yyyy");
+
+		List<String> cleared_list=new ArrayList<String>();
+		for (Iterator iterator = return_obj.keySet().iterator(); iterator.hasNext();) 
+		{
+			String key = (String) iterator.next();
+			logger.info("Key for generateAmmortization table is " + key + "and value is" + return_obj.get(key));
+			if (!cleared_list.contains(key)) 
+			{
+				iformObj.clearTable(key);
+				cleared_list.add(key);
+			}
+			iformObj.addDataToGrid(key, (JSONArray) return_obj.get(key));
+		}
+		//Code to fill standing instruction
+				return "Ammortization details generated successfully";
+		*/
+		//Under Developmnet
+		logger.info("Inside generateAmmortization function");
+		String callName = "ContractAmortizationInq"; //For ammortization details
+		String ResponseXML = createRequestXML(iformObj, callName);
+		//JSONObject return_obj=new JSONObject();
+		
+		try
+		{
+		String restricted_tags=GetXML.getProp().getProperty(callName+"_RestrictedTags");
+		String []restricted_values=restricted_tags.split(",");
+		for(String temp:restricted_values)
+			ResponseXML=ResponseXML.replace(temp,"");
+	
+		//logger.info("Response XML received by setResponseDataGrid is"+ResponseXML);
+		String tagName = "_TagNameResponseGrid";
+		String tagNames = GetXML.getProp().getProperty(callName + tagName);
+		logger.info(tagNames);
+		
+		String statuscode=GetXML.getProp().getProperty(callName+"_StatusCode");
+		String []status_code_split=statuscode.split("~");
+		
+		String[] tagValue = tagNames.split(",");
+		for(String tag: tagValue)
+		{
+			String []tags=tag.split("~");
+			iformObj.clearTable(tags[tags.length-1]);
+			WFXmlResponse objWFxmlResponse = new WFXmlResponse(ResponseXML);
+			logger.info("objWFxmlResponse value is "+objWFxmlResponse);
+
+			JSONArray jsonarr=new JSONArray();
+			
+			logger.info("Status codes are"+status_code_split[0]+"and"+status_code_split[1]);
+			
+			logger.info("Value of status tag in response is"+objWFxmlResponse.getVal(status_code_split[0]));
+			
+			if (objWFxmlResponse.getVal(status_code_split[0]).equals(status_code_split[1])) {
+			WFXmlList WFXmlList = objWFxmlResponse.createList(tags[0],tags[1]);
+			//logger.info("Wfmxmlsit is --------------"+WFXmlList);
+			for (int i = 0; WFXmlList.hasMoreElements(true); WFXmlList.skip(true), i++) {
+			
+				JSONObject jsonobj = new JSONObject();
+				for(int j=2;j<tags.length-1;++j)
+				{
+					
+					String tag_split_values=tags[j];
+					if((!tag_split_values.contains("@")))
+					{
+						String []hash_split_values=tag_split_values.split("#");
+						String result_from_response=WFXmlList.getVal(hash_split_values[1]);
+						if(hash_split_values[0].equalsIgnoreCase("Installment Date (DD-MM-YYYY)"))
+						{
+							SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd");
+							SimpleDateFormat outputFormatter=new SimpleDateFormat("dd-MM-yyyy");
+							try {
+								Date installment_date_date = (Date)inputFormatter.parse(result_from_response);
+								String result_installment_date=outputFormatter.format(installment_date_date);
+								result_from_response=result_installment_date;
+								} 
+							catch (java.text.ParseException e) 
+							{
+								logger.info("Exception occurred: generateAmmortization ");
+								result_from_response=WFXmlList.getVal(hash_split_values[1]);
+								e.printStackTrace();
+							}
+						}
+						else if(result_from_response.equals(null) || result_from_response.equals(""))
+							{
+								result_from_response=" ";
+							}
+						jsonobj.put(hash_split_values[0],result_from_response);
+					}
+					else
+					{
+						String []inputTagswithoutRateSign=tag_split_values.split("@");
+						
+						String []hash_split_values=inputTagswithoutRateSign[0].split("#");
+						String result_from_response=WFXmlList.getVal(hash_split_values[1]);
+						if(result_from_response.equals(null) || result_from_response.equals(""))
+						{
+							result_from_response=" ";
+						}
+						String returned_value="",query="";
+		    			try
+		    			{
+			    			query="SELECT PARAM_VALUE FROM NG_MAST_POS_TAG_KEY_VALUE_CONFIG WHERE PARAM_KEY='"+result_from_response+"' AND TAG_IDENT='"+inputTagswithoutRateSign[1]+"' AND ISACTIVE='Y'" ;
+			    			logger.info("Query to replace key with value is"+query);
+			    			List<List<String>> code_values = iformObj.getDataFromDB(query);
+			    			
+				    			if(code_values.size()>0)
+				    			{	
+				    				returned_value=code_values.get(0).get(0);
+				    			}
+		    			}catch(Exception e)
+		    			{
+		    				logger.info("Exception occurred: setResponseDataGrid: Database Query "+query+" and stack trace is"+e);
+		    			}
+		    			
+		    			jsonobj.put(hash_split_values[0],returned_value);
+		    			
+					}
+				}
+				logger.info(jsonarr);
+				jsonarr.add(jsonobj);
+			}
+			logger.info("Final json array that we are setting in installment detail grid is "+jsonarr);
+			iformObj.addDataToGrid(tags[tags.length-1], jsonarr);
+			}
+			else
+			{
+				logger.info("For "+callName+" Status code returned from response is not success ");
+			}
+			
+			}
+		}
+		catch(Exception e)
+		{
+			logger.info("Exception occurred: setResponseDataGrid "+e);
+		}
+		
+		try {
+			String disbursal = (String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_DISBURSAL_ACC_NO");
+			String amount = (String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_INSTALLMENT_AMNT");
+			JSONArray jsonarr2 = iformObj.getDataFromGrid("Q_NG_POS_INSTALMENT_DETAILS_GRID");
+			String strt_date="";
+			String end_date="";
+			if(jsonarr2.size() > 0) {
+				JSONObject jsonobj2 = (JSONObject) jsonarr2.get(0);
+				strt_date = (String) jsonobj2.get("Installment Date (DD-MM-YYYY)");
+				logger.info("from_date: "+ strt_date);
+				JSONObject jsonobj3 = (JSONObject) jsonarr2.get((jsonarr2.size()-1));
+				end_date = (String) jsonobj3.get("Installment Date (DD-MM-YYYY)");
+				logger.info("to_date: "+ end_date);
+			}
+			String[] from_date = strt_date.split("-");
+			String[] to_date = end_date.split("-");
+			strt_date = from_date[0]+"/"+from_date[1]+"/"+from_date[2];
+			end_date = to_date[0]+"/"+to_date[1]+"/"+to_date[2];
+			
+				JSONArray jsonArr = new JSONArray();
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("SSI Bank", "Al Rajhi Bank");
+				jsonObj.put("Component", "EMI");
+				jsonObj.put("Account Number", disbursal);
+				jsonObj.put("From Date", strt_date);
+				jsonObj.put("To Date", end_date);
+				jsonObj.put("Amount", amount);
+
+				logger.info("Json Array is" + jsonObj);
+				jsonArr.add(jsonObj);
+				
+				iformObj.addDataToGrid("STANDING_INSTRUCT_GRID", jsonArr);
+			}
+			catch(Exception e)
+			{
+				logger.info("Exception occurred: standingInstrution "+e);
+			}
+			
+
+		
+		//iformObj.addDataToGrid(return_obj.g, evidence_code_obj_array);
+		
+		return "Ammortization details generated successfully";
+		
+	}
+	
+	private String calculateProfitPercentage(IFormReference iformObj, String stringdata) {
+		try
+		{
+			String product_category=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_PRODUCT_CATEGORY");
+			String customer_category=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_CUSTOMER_CATEGORY");
+			String request_type=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_REQUEST_TYPE");
+			String campaign=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_CAMPAIGN");
+			String tenure=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_TENURE");
+			String requested_amt=(String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_REQ_AMNT_SAR");
+			
+			if(requested_amt==null || requested_amt=="")
+			{
+				requested_amt="0";
+			}
+			
+			double admin_Fees_rate=0,admin_Fees_vat_per=0,admin_fees=0,vat,total_admin_fees=0,max_fees_amount=0;
+			String query="SELECT DEF_PROFIT_RATE,RATE,VAT_PER,MAX_FEES_AMOUNT FROM NG_MAST_POS_PRODUCT A,NG_MAST_POS_FEE B WHERE A.FeeID=B.Fees_ID AND a.CustCategoryID=b.Scheme_ID AND A.Product=(SELECT CODE FROM NG_MAST_PRODUCT WHERE PRODUCT_CATEGORY = '"+product_category+"') AND a.custcategoryID=(SELECT CODE FROM NG_MAST_CUSTOMER WHERE customer_CATEGORY = '"+customer_category+"') AND a.request_type='"+request_type+"' AND a.campaign='"+campaign+"' AND a.max_tenure>='"+tenure+"' AND a.max_amount>="+requested_amt+" AND a.min_amount<="+requested_amt+" ";
+			logger.info("Query to calculate profit percentage is "+query);
+			List<List<String>> returned_result = iformObj.getDataFromDB(query);
+			if(returned_result.size()>0 && returned_result.get(0).size()==4)
+			{
+				setControlValue(iformObj,"Q_NG_POS_APPLICATION_DATA_PROFIT", returned_result.get(0).get(0));
+				admin_Fees_rate= Double.parseDouble(returned_result.get(0).get(1));
+				admin_Fees_vat_per=Double.parseDouble(returned_result.get(0).get(2));
+				max_fees_amount=Double.parseDouble(returned_result.get(0).get(3));
+				logger.info("Setting Profit percentage, fees rate and fees vat :  "+returned_result.get(0).get(0)+", "+returned_result.get(0).get(1)+", "+returned_result.get(0).get(2));
+			}
+		
+			setControlValue(iformObj,"ADMIN_FEES_RATE", Double.toString(admin_Fees_rate));
+			logger.info("Setting Profit ADMIN_FEES_RATE as "+Double.toString(admin_Fees_rate));
+			setControlValue(iformObj,"ADMIN_FEES_VAT_PERC",	Double.toString(admin_Fees_vat_per) );
+			logger.info("Setting Profit ADMIN_FEES_VAT_PERC as "+Double.toString(admin_Fees_vat_per));
+			admin_fees=Double.parseDouble(requested_amt)*admin_Fees_rate/100;//75000
+			if(admin_fees>=max_fees_amount)
+				admin_fees=max_fees_amount;
+			vat=admin_fees*admin_Fees_vat_per/100;
+			total_admin_fees=admin_fees+vat;
+			logger.info("Setting total admin fees as "+total_admin_fees);
+			if(total_admin_fees!=0)
+				setControlValue(iformObj,"ADMIN_FEES",String.format("%.2f",total_admin_fees) );
+			else
+				setControlValue(iformObj,"ADMIN_FEES","0" );
+			
+			iformObj.clearTable("FEES_CHRGD_GRID");
+			JSONObject fees_grid_object=new JSONObject();
+			JSONArray fees_grid_array=new JSONArray();
+			fees_grid_object.put("Fees Name","Admin fees");
+			fees_grid_object.put("Fees Method","With Disursal");
+			fees_grid_object.put("Fees Type ","Rate");
+			fees_grid_object.put("Fees %",admin_Fees_rate);
+			fees_grid_object.put("Fees Amount",admin_fees);
+			fees_grid_object.put("VAT on Fees",vat);
+			fees_grid_object.put("Total Fees",total_admin_fees);
+			fees_grid_array.add(fees_grid_object);
+			iformObj.addDataToGrid("FEES_CHRGD_GRID", fees_grid_array);
+			logger.info("Fee charged array is "+fees_grid_array);
+			/*
+			String los_app_num=getWorkitemName(iformObj);
+		    los_app_num=los_app_num.substring(4,los_app_num.length() - 4);
+		    los_app_num=los_app_num.replaceFirst("^0+(?!$)","");
+		    int no_of_zeroes=10-los_app_num.length();
+		    for(int i=0;i<no_of_zeroes;i++)
+			{
+		    	los_app_num='0'+los_app_num;
+		    }
+		    
+		    logger.info("Setting LOS Application no as "+los_app_num);
+			setControlValue(iformObj,"LOS_APPLICATION_NO",los_app_num);
+			*/
+		
+		}
+		catch(Exception e)
+		{
+			logger.info("Exception occurred: calculateProfitPercentage: with stack trace "+e);
+		}
+		try
+		{
+		String disbursal = (String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_DISBURSAL_ACC_NO");
+		String amount = (String) iformObj.getValue("Q_NG_POS_APPLICATION_DATA_INSTALLMENT_AMNT");
+		JSONArray jsonarr2 = iformObj.getDataFromGrid("Q_NG_POS_INSTALMENT_DETAILS_GRID");
+		String strt_date="";
+		String end_date="";
+		if(jsonarr2.size() > 0) {
+			JSONObject jsonobj2 = (JSONObject) jsonarr2.get(0);
+			strt_date = (String) jsonobj2.get("Installment Date");
+			logger.info("from_date: "+ strt_date);
+			JSONObject jsonobj3 = (JSONObject) jsonarr2.get((jsonarr2.size()-1));
+			end_date = (String) jsonobj3.get("Installment Date");
+			logger.info("to_date: "+ end_date);
+		}
+		String[] from_date = strt_date.split("-");
+		String[] to_date = end_date.split("-");
+		strt_date = from_date[2]+"/"+from_date[1]+"/"+from_date[0];
+		end_date = to_date[2]+"/"+to_date[1]+"/"+to_date[0];
+		
+			JSONArray jsonArr = new JSONArray();
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("SSI Bank", "Al Rajhi Bank");
+			jsonObj.put("Component", "EMI");
+			jsonObj.put("Account Number", disbursal);
+			jsonObj.put("From Date", strt_date);
+			jsonObj.put("To Date", end_date);
+			jsonObj.put("Amount", amount);
+
+			logger.info("Json Array is" + jsonObj);
+			jsonArr.add(jsonObj);
+			
+			iformObj.addDataToGrid("table62", jsonArr);
+		}
+		catch(Exception e)
+		{
+			logger.info("Exception occurred: standingInstrution "+e);
+		}
+		
+		return "Profit Percentage calculated successfully";
+	}
+
+	private String ConvertHijriDate(IFormReference iformObj, String stringdata) {
+		String data_split[] = stringdata.split("#");
+		String input_date = getControlValue(iformObj, data_split[0]);
+		Date input_formatted_date = null;
+		try {
+			input_formatted_date = new SimpleDateFormat("dd/MM/yyyy").parse(input_date);
+		} catch (java.text.ParseException e) {
+			logger.info(" ConvertHijriDate Exception is" + e);
+			e.printStackTrace();
+		}
+		String output_date = convertHijriToGr(iformObj, input_formatted_date);
+		setControlValue(iformObj, data_split[1], output_date);
+		return "Gr date set successfully";
+	}
+
+	private String fillSIMAHData(IFormReference iformObj, String stringdata) {
+		String callName = "RetrieveCommercialSummaryReport";
+		String responseXML = createRequestXML(iformObj, callName);
+		JSONObject jsonobj = setResponseData(iformObj, callName, responseXML);
+
+		for (Iterator iterator = jsonobj.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			if (!jsonobj.get(key).toString().contains("#")) {
+				setControlValue(iformObj, key, jsonobj.get(key).toString());
+			}
+		}
+
+		JSONObject return_obj = setResponseDataGrid(iformObj, callName, responseXML);
+
+		// logger.info("Value received by SIMAH function is"+return_obj);
+
+		for (Iterator iterator = return_obj.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			// logger.info("Key for SIMAH table is "+key+"and value is"+
+			// return_obj.get(key));
+
+			iformObj.addDataToGrid(key, (JSONArray) return_obj.get(key));
+		}
+
+		return "SIMAH fetched sucessfully";
+	}
+
+	private String fillPOSdetails(IFormReference iformObj, String stringdata) {
+		logger.info("String data to fill posdetails is" + stringdata);
+		String[] value_split = stringdata.split("#");
+		String terminal_id = getControlValue(iformObj, value_split[0]);
+		iformObj.clearTable(value_split[1]);
+		logger.info("TerminalID to fillPOSdetails is " + terminal_id + "and table id is  is" + value_split[1]);
+		String wi_name=getWorkitemName(iformObj);
+		// String query="INSERT INTO NG_POS_STMTDATA_CORTEX_DETAIL_GRID SELECT
+		// '"+processInstanceID+"',CORTEX_MONTH,THROUGHPUT,CORTEX_TRANSACTION,AVG_TRANSACTN_AMT
+		// FROM MSB_SEARCH_STMTDATA_CORTEX_DETAIL_GRID WHERE
+		// TERMINAL_ID='"+terminal_id+"' ";
+		JSONArray jsonarr = new JSONArray();
+		JSONObject jsonobj = null;
+
+		String query = "SELECT CORTEX_MONTH,THROUGHPUT,CORTEX_TRANSACTION,AVG_TRANSACTN_AMT FROM NG_POS_STMTDATA_CORTEX_DETAIL_GRID WHERE TERMINAL_ID='"
+				+ terminal_id + "' AND WI_NAME='"+wi_name+"' " ;
+		List<List<String>> pos_data = iformObj.getDataFromDB(query);
+		for (List<String> value : pos_data) {
+			jsonobj = new JSONObject();
+			jsonobj.put("Month", value.get(0));
+			jsonobj.put("Throughput", value.get(1));
+			jsonobj.put("Transaction", value.get(2));
+			jsonobj.put("Average Transaction Amount", value.get(3));
+			jsonarr.add(jsonobj);
+		}
+
+		logger.info("JSON Array to fill pos details is" + jsonobj);
+		iformObj.addDataToGrid(value_split[1], jsonarr);
+		return "successfully filled POS Details";
+
+	}
+
+	private String SetPQList(IFormReference iformObj, String stringdata) {
+		String wi_name=getActivityName(iformObj);
+		logger.info("inside SetPQList function and wi_name is "+wi_name );
+		String procedurename = "NG_CHECK_PQ_STATUS";
+		
+		if(wi_name.equalsIgnoreCase("PQ1 without SIMAH"))	
+		{
+			String parameterlist = getWorkitemName(iformObj) + "~" + "PQ1";
+			callProcedure(iformObj, procedurename, parameterlist);
+		}
+		else if(wi_name.equalsIgnoreCase("PQ2 with SIMAH"))
+		{
+			String parameterlist = getWorkitemName(iformObj) + "~" + "PQ2";
+			callProcedure(iformObj, procedurename, parameterlist);
+		}
+		logger.info("Exit SetPQList function ");
+		
+		return "hello";
+	}
+
+	private String fillTerminalId(IFormReference iformObj, String stringdata) {
+
+		String wi_name=getWorkitemName(iformObj);
+		String query = "SELECT DISTINCT TERMINAL_ID FROM NG_POS_STMTDATA_CORTEX_DETAIL_GRID WHERE WI_NAME='"+wi_name+"' ";
+		try {
+		List<List<String>> terminal_id = getDataFromDB(iformObj, query);
+		for (List<String> value : terminal_id) {
+			String result = value.get(0);
+			logger.info("Terminal Id's set in dropdown are" + result);
+			iformObj.addItemInCombo(stringdata, result, result);
+		}
+		}
+		catch(Exception e)
+		{
+			logger.info("Exception occurred: fillTerminalId "+e);
+		}
+		return "Terminal ID filled Successfully";
+	}
+
+	private String fillCTFMSBData(IFormReference iformObj, String stringdata) {
+
+		String callName = "LoanDisburseDataInq";
+		logger.info(stringdata);
+		int rowindex = Integer.parseInt(stringdata);
+		logger.info("Row index selected by user is" + rowindex);
+		JSONArray jsonarr = iformObj.getDataFromGrid("Q_NG_POS_CREDITLINE_CTF_MSB_GRID");
+		JSONObject jsonobj = (JSONObject) jsonarr.get(rowindex);
+		String dossier_id = (String) jsonobj.get("Dossier No");
+		logger.info("Dossier Id is" + dossier_id);
+		logger.info("Inside createRequestXML Function and callName is " + callName);
+		String tagName = "_TagName";
+		String tagNames = GetXML.getProp().getProperty(callName + tagName);
+		logger.info(tagNames);
+		String request_prefix=GetXML.getProp().getProperty(callName+"_RequestPrefix");
+		if(request_prefix.equals(null))
+		{
+			request_prefix="";
+		}
+		String[] tags = tagNames.split(",");
+
+		String requestXML = readDummyRequest(callName);
+		XMLParser parser = new XMLParser(requestXML);
+
+		for (String tag : tags) {
+			String tagValue = parser.getValueOf(tag);
+			if (tagValue.startsWith("formid~")) {
+				String value = (String) iformObj.getValue(tagValue.split("~")[1]);
+				parser.changeValue(request_prefix+tag, value);
+			}
+		}
+
+		parser.changeValue(request_prefix+"DossierID", dossier_id);
+		logger.info("RequestXML is :\n" + parser.toString());
+		String responseXML = new SocketConnector().getSocketXMLResponse(parser.toString(), callName,iformObj);
+		
+		String restricted_tags=GetXML.getProp().getProperty(callName+"_RestrictedTags");
+		String []restricted_values=restricted_tags.split(",");
+		for(String temp:restricted_values)
+			responseXML = responseXML.replace(temp, "");
+
+		logger.info("Response XML received by setResponseDataGrid for CTF MSB is" + responseXML);
+		tagName = "_TagNameResponseGrid";
+		tagNames = GetXML.getProp().getProperty(callName + tagName);
+
+		logger.info(tagNames);
+
+		String statuscode = GetXML.getProp().getProperty(callName + "_StatusCode");
+		String[] status_code_split = statuscode.split("~");
+
+		String[] tagValue = tagNames.split(",");
+		for (String tag : tagValue) {
+			tags = tag.split("~");
+			WFXmlResponse objWFxmlResponse = new WFXmlResponse(responseXML);
+			logger.info("objWFxmlResponse value is " + objWFxmlResponse);
+			jsonarr = new JSONArray();
+			if (objWFxmlResponse.getVal(status_code_split[0]).equals(status_code_split[1])) {
+				WFXmlList WFXmlList = objWFxmlResponse.createList(tags[0], tags[1]);
+				logger.info("Wfmxmlsit is --------------" + WFXmlList);
+
+				for (int i = 0; WFXmlList.hasMoreElements(true); WFXmlList.skip(true), i++) {
+
+					jsonobj = new JSONObject();
+					logger.info("iiiiiiiiii" + i);
+					logger.info("Dossier id we want is" + dossier_id);
+					logger.info("Dossier id avaiaalable is" + WFXmlList.getVal("DossierID"));
+					if (WFXmlList.getVal("DossierID").equalsIgnoreCase(dossier_id)) {
+						for (int j = 2; j < tags.length - 1; ++j) {
+							String one = tags[j];
+							logger.info("333333333333333333" + one);
+							String[] temp = one.split("#");
+							logger.info("@@@" + temp[0] + "!!!!" + temp[1]);
+							String xyz = WFXmlList.getVal(temp[1]);
+							logger.info("xyz" + xyz);
+							if (xyz == null || xyz == "") {
+								xyz = " ";
+							}
+							jsonobj.put(temp[0], xyz);
+						}
+						jsonarr.add(jsonobj);
+					}
+
+				}
+				logger.info(jsonarr);
+				logger.info("ID of table is table90");
+				iformObj.clearTable("table90");
+				iformObj.addDataToGrid("table90", jsonarr);
+			} else {
+				logger.info("For " + callName + " Status code returned from response is not success ");
+			}
+		}
+
+		return "All Good";
+	}
+
+	private String fillStatementData(IFormReference iformObj, String stringdata) {
+
+		String[] callNames = { "MSBAcctsDataInq", "MSBFacilitiesDataInq" };
+		for (String callName : callNames) {
+			String responseXML;
+			responseXML = createRequestXML(iformObj, callName);
+			setResponseDataGrid(iformObj, callName, responseXML);
+		}
+		String wi_name = getWorkitemName(iformObj);
+		String query = "SELECT DISTINCT ACC_NO FROM NG_POS_STMTDATA_ACCMOVMNT_GRID WHERE WI_NAME='" + wi_name + "' ";
+		try {
+			List<List<String>> account_no = getDataFromDB(iformObj, query);
+			for (List<String> value : account_no) {
+				String result = value.get(0);
+				logger.info("Account No's set in dropdown are" + result);
+				iformObj.addItemInCombo(stringdata, result, result);
+			}
+		} catch (Exception e) {
+			logger.info("Exception occurred: fillAccounts " + e);
+		}
+		return "";
+	}
+
+	private String createDisbursementWI(IFormReference iformObj, String stringdata) {
+		POSCommon obj = new POSCommon(iformObj);
+		logger.info("createDisbursementWI before call");
+		String winame_disbursement = obj.createWorkitemDisbursement(iformObj, stringdata);
+
+		try {
+
+			String app_limit_amt = getControlValue(iformObj,
+					"Q_NG_POS_APPLICATION_DATA_APPROVED_LIMIT_AMT_AFTER_SIMAH");
+			String avail_amt_for_disbursement = getControlValue(iformObj,
+					"Q_NG_POS_APPLICATION_DATA_AVAIL_AMT_FOR_DISBURSEMENT");
+			String amt_to_be_disbursed = getControlValue(iformObj, "Q_NG_POS_APPLICATION_DATA_AMT_TO_BE_DISBURSED");
+			String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+			String parent_wi_name = getControlValue(iformObj, "WI_NAME");
+			/*
+			 * String
+			 * query="SELECT WI_NAME FROM NG_DISBURSEMENT_EXTTABLE WHERE PARENT_WI_NAME='"
+			 * +parent_wi_name+"'"; logger.info(query); List<List<String>>
+			 * result=getDataFromDB(iformObj, query);
+			 * disbursement_workitem_no=result.get(0).get(0);
+			 */
+			logger.info("Disburseemnt work item no" + winame_disbursement);
+			JSONArray jsonArr = new JSONArray();
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("Application Amount after SIMAH", app_limit_amt);
+			jsonObj.put("Available Amount for Disbursement", avail_amt_for_disbursement);
+			jsonObj.put("Amount to be Disbursed", amt_to_be_disbursed);
+			jsonObj.put("Date Time", date);
+			jsonObj.put("Disbursement Workitem No.", winame_disbursement);
+
+			logger.info("Json Array is" + jsonObj);
+			jsonArr.add(jsonObj);
+			iformObj.addDataToGrid("Q_NG_POS_DISBURSEMENT_GRID", jsonArr);
+
+		} catch (Exception e) {
+			logger.error("Exception catched in  addToDecisionHistoryGrid", e);
+		}
+
+		return winame_disbursement;
+	}
+
+	/*
+	 * private String fillDisbursementDetails(IFormReference iformObj, String
+	 * stringdata) {
+	 * 
+	 * 
+	 * try {
+	 * 
+	 * String app_limit_amt = getControlValue(iformObj,
+	 * "Q_NG_POS_APPLICATION_DATA_APPROVED_LIMIT_AMT_AFTER_SIMAH"); String
+	 * avail_amt_for_disbursement = getControlValue(iformObj,
+	 * "Q_NG_POS_APPLICATION_DATA_AVAIL_AMT_FOR_DISBURSEMENT"); String
+	 * amt_to_be_disbursed = getControlValue(iformObj,
+	 * "Q_NG_POS_APPLICATION_DATA_AMT_TO_BE_DISBURSED"); String date = new
+	 * SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()); String
+	 * disbursement_workitem_no = winame_disbursement;
+	 * 
+	 * String parent_wi_name = getControlValue(iformObj, "WI_NAME");
+	 * 
+	 * logger.info("Disburseemnt work item no" + disbursement_workitem_no);
+	 * JSONArray jsonArr = new JSONArray(); JSONObject jsonObj = new JSONObject();
+	 * jsonObj.put("Application Amount after SIMAH", app_limit_amt);
+	 * jsonObj.put("Available Amount for Disbursement", avail_amt_for_disbursement);
+	 * jsonObj.put("Amount to be Disbursed", amt_to_be_disbursed);
+	 * jsonObj.put("Date Time", date); jsonObj.put("Disbursement Workitem No.",
+	 * disbursement_workitem_no);
+	 * 
+	 * logger.info("Json Array is" + jsonObj); jsonArr.add(jsonObj);
+	 * iformObj.addDataToGrid("Q_NG_POS_DISBURSEMENT_GRID", jsonArr);
+	 * 
+	 * } catch (Exception e) {
+	 * logger.error("Exception catched in  addToDecisionHistoryGrid", e); }
+	 * 
+	 * return "All is well"; }
+	 */
+	
+	public String addToDecisionHistoryGrid(IFormReference iformObj, String stringData) {
+		try {
+			logger.info("inside addToDecisionHistoryGrid");
+			String strData[] = stringData.split("#");
+			String Workstep = strData[0];
+			logger.info("workstep name is " + Workstep);
+			String username = strData[1];
+			logger.info("username name is " + username);
+			String decision = getControlValue(iformObj, "DECISION");
+			logger.info("decision name is " + decision);
+			String action = getControlValue(iformObj, "REMARKS");
+			logger.info("action name is " + action);
+			String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+			logger.info("date name is " + date);
+			JSONArray jsonArr = new JSONArray();
+			JSONObject jsonObj = new JSONObject();
+
+			jsonObj.put("Date Time", date);
+
+			logger.info(date);
+			jsonObj.put("Workstep", Workstep);
+			logger.info("inside Decision his");
+			logger.info(Workstep);
+			jsonObj.put("Decision", decision);
+			logger.info(decision);
+			jsonObj.put("User Name", username);
+			logger.info(username);
+			jsonObj.put("Remark", action);
+			logger.info(action);
+			jsonObj.put("TAT", " ");
+			logger.info("TAT");
+			logger.info("Jason object value is " + jsonObj);
+			jsonArr.add(jsonObj);
+			iformObj.addDataToGrid("table78", jsonArr); // table78 is the id of decision history table
+		} catch (Exception e) {
+			logger.error("Exception catched in  addToDecisionHistoryGrid", e);
+		}
+		return "SUCCESS~DataAddedToGrid";
+	}
+
+	/*
+	private String setRoutingLevel(IFormReference iformObj, String stringdata) {
+		// TODO Auto-generated method stub
+		logger.info("Inside setRoutingLevel function");
+		String query = "";
+
+		// Added by SK
+		if (stringdata.equalsIgnoreCase("BR")) {
+			logger.info("BR CASE");
+			query = "select max(route_level) as final_level from(select min(b.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and B.amt>A.app_limit_amt AND B.APPROVAL_TYPE='Business' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj)
+					+ "' UNION select min(B.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and A.no_of_exception=B.no_of_exception AND B.APPROVAL_TYPE='Business' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj) + "') D";
+		} else if (stringdata.equalsIgnoreCase("CR")) {
+			logger.info("CR CASE");
+			query = "select max(route_level) as final_level from(select min(b.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and B.amt>A.app_limit_amt AND B.APPROVAL_TYPE='Credit Risk' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj)
+					+ "' UNION select min(B.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and B.process_name=C.process_name and b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id and A.no_of_exception=B.no_of_exception AND B.APPROVAL_TYPE='Credit Risk' AND A.WI_NAME='"
+					+ getWorkitemName(iformObj) + "') D";
+		}
+
+		String final_level = "";
+		List<List<String>> comboValues = getDataFromDB(iformObj, query);
+		logger.info(comboValues);
+
+		for (List<String> value : comboValues) {
+			final_level = value.get(0);
+			logger.debug("final_level :: " + final_level);
+			setControlValue(iformObj, "FINAL_ROUTING_LEVEL", final_level);
+		}
+
+		return "SUCCESS";
+
+	}
+*/
+	private String fillTrassetData(IFormReference iformObj, String stringdata) {
+
+		String cic_no = getControlValue(iformObj, "Q_NG_POS_COMPANY_DATA_CIC");
+		// String wi_name=getControlValue(iformObj, "WI_NAME");
+
+		String query = "SELECT * FROM NG_MAST_TRASSET_DATA WHERE CIC='" + cic_no + "' ";
+		List<List<String>> result = getDataFromDB(iformObj, query);
+		try {
+			if(result.size()>0)
+			{
+				logger.info("result from mast data is" + result);
+				logger.info("result at 0 index is " + result.get(0));
+				logger.info("result at 0,0 index is" + result.get(0).get(0));
+	
+				JSONArray jsonarray = new JSONArray();
+				JSONObject jsonobject;
+	
+				List<List<String>> resultfromDB = getDataFromDB(iformObj, query);
+				logger.info(result);
+				for (List<String> value : resultfromDB) {
+					jsonobject = new JSONObject();
+					jsonobject.put("Trasset Ref No", value.get(1));
+					jsonobject.put("Product Name", value.get(2));
+					jsonobject.put("Revolving", value.get(3));
+					jsonobject.put("Profit Rate Type", value.get(4));
+					jsonobject.put("Profit Rate", value.get(5));
+					jsonobject.put("Effective Rate", " ");
+					jsonobject.put("Expiry Date", value.get(8));
+					jsonobject.put("Approved Amount", " ");
+					jsonobject.put("Availed Amount", " ");
+					jsonobject.put("Outstanding Amount", value.get(13));
+					jsonobject.put("Available Amount", value.get(14));
+					jsonobject.put("ORR", " ");
+					jsonobject.put("Days in PDO", value.get(16));
+					jsonobject.put("PDO Amount", value.get(17));
+					jsonobject.put("Write Off", value.get(18));
+					jsonobject.put("RM code", value.get(20));
+					jsonobject.put("RM Name", value.get(21));
+					jsonobject.put("TL Name", value.get(22));
+	
+					jsonarray.add(jsonobject);
+				}
+
+				iformObj.addDataToGrid("Q_NG_POS_CREDITLINE_TRASSET_DET_GRID", jsonarray);
+			}
+		}catch(Exception e)
+		{
+			logger.info("Exception occurred: fillTrassetData: Database Query "+query+" and stack trace is"+e);
+		}		
+		return "Trasset Data filled succesfully";
+	}
+
+	
+	  private String setRoutingLevel(IFormReference iformObj,String stringdata) 
+	  { 
+       logger.info("Inside setRoutingLevel function");
+       //getWorkitemName(iformObj)
+       String query="select max(route_level) as final_level from( select min(c.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B, ng_mast_level_mapping c where A.channel=B.filter and A.channel=c.filter AND B.process_name=C.process_name AND b.approval_type=C.approval_type AND B.filter=C.filter and b.APPROVAL_TYPE='Business' AND B.level_id=C.level_id and convert(float,B.amt)>=convert(float,A.app_limit_amt) AND a.wi_name='"+getWorkitemName(iformObj)+"' UNION select max(C.level_id) as route_level from ng_pos_exttable A, ng_mast_authority_matrix B,ng_mast_level_mapping c WHERE A.channel=B.filter and A.channel=c.filter and b.APPROVAL_TYPE='Business' and B.process_name=C.process_name AND b.approval_type=C.approval_type and B.filter=C.filter and B.level_id=C.level_id AND (A.no_of_exception=B.no_of_exception or A.no_of_exception>B.no_of_exception) AND a.wi_name='"+getWorkitemName(iformObj)+"') D ";
+       String final_level=""; 
+       List<List<String>> comboValues = getDataFromDB(iformObj,query);
+       logger.info("For setting routing values db result is "+comboValues);
+	  
+		for (List<String> value : comboValues)
+		{
+			final_level = value.get(0);
+			logger.debug("final_level :: " + final_level);
+			setControlValue(iformObj, "FINAL_ROUTING_LEVEL", final_level);
+		}
+
+		return "setRoutingLevel set successfully";
+	  
+	  }
+	 
+	// chirag-start
+	Properties p;
+
+	public void loadProperties() {
+		logger.info("insise loAD properties" + System.getProperty("user.dir"));
+
+		p = new Properties();
+		String sConfigFile = System.getProperty("user.dir") + System.getProperty("file.separator")
+				+ "template_generation_AlRajhi" + System.getProperty("file.separator") + "template_gen.properties";
+
+		try {
+			logger.info("properties try block");
+			p.load(new FileInputStream(sConfigFile));
+		} catch (IOException e) {
+
+		}
+	}
+
+	public String generateTemplate(IFormReference iformObj, String stringdata) {
+
+		logger.info("inside generate tempalte method");
+		WDGeneralData wdgeneralObj = iformObj.getObjGeneralData();
+		loadProperties();
+		String sJtsIp = p.getProperty("sJtsIp");
+		String sJtsPort = p.getProperty("sJtsPort");
+		String pStorageDIR = p.getProperty("storageDIR_gen_templates");
+		String attachInOD = p.getProperty("attachInOD");
+		String socketIP = "127.0.0.1";
+		int portNo = Integer.parseInt(p.getProperty("utlity_serversocket_portNo"));
+		logger.info("sJtsIp " + sJtsIp);
+		logger.info("sJtsPort " + sJtsPort);
+		logger.info("portNo " + portNo);
+		logger.info("pStorageDIR " + pStorageDIR);
+		logger.info("attachInOD " + attachInOD);
+		logger.info("socketIP " + socketIP);
+
+		String serverName = "Jboss";
+		String sServerIp = iformObj.getServerIp();
+		String sServerPort = iformObj.getServerPort();
+		String sSessionId = wdgeneralObj.getM_strDMSSessionId();
+		String sCabname = iformObj.getCabinetName();
+		String sWIName = getWorkitemName(iformObj);
+		String sProcessName = iformObj.getProcessName();
+		String sTemplateName = stringdata;
+		String filetype = "DOC";
+		String COLLATERAL = "collateral";
+		COLLATERAL = (COLLATERAL == null) ? "" : COLLATERAL;
+
+		final String SS_EXEC_ERROR_MSG = "Error from Call Client Socket Server while Web-Service execution";
+		final String SS_CONN_ERROR_MSG = "Could not connect to Call Client Socket Server";
+
+		String iBPSserverIP = iformObj.getServerIp();
+		String iBPSserverPort = iformObj.getServerPort();
+
+		logger.info("\n");
+		logger.info("serverName " + serverName);
+		logger.info("sServerIp " + sServerIp);
+		logger.info("sServerPort " + sServerPort);
+		logger.info("sSessionId " + sSessionId);
+		logger.info("sCabname " + sCabname);
+		logger.info("sWIName " + sWIName);
+		logger.info("sTemplateName " + sTemplateName);
+		logger.info("sProcessName " + sProcessName);
+		logger.info("filetype " + filetype);
+		logger.info("System.getProperty user.dir  " + System.getProperty("user.dir"));
+		logger.info("\n");
+		logger.info("COLLATERAL:" + COLLATERAL);
+		logger.info("iBPSserverIP:" + iBPSserverIP);
+		logger.info("iBPSserverPort:" + iBPSserverPort);
+		System.err.println("Data Receieved");
+		String responseXml = null;
+		String requestXml = null;
+
+		System.err.println("portNo to listen from SocketCall.jsp : " + portNo);
+
+		requestXml = "WI_NAME=" + sWIName + "~~JTS_IP=" + sJtsIp + "~~JTS_PORT=" + sJtsPort + "~~SESSION_ID="
+				+ sSessionId + "~~SERVER_IP=" + sServerIp + "~~SERVER_PORT=" + sServerPort + "~~SERVER_NAME="
+				+ serverName + "~~CABINET_NAME=" + sCabname + "~~PROCESS_NAME=" + sProcessName + "~~TEMPLATE_NAME="
+				+ sTemplateName + "~~FILE_TYPE=" + filetype + "~~pStorageDIR=" + pStorageDIR + "~~attachInOD="
+				+ attachInOD + "~~COLLATERAL=" + COLLATERAL + "~~iBPSserverIP=" + iBPSserverIP + "~~iBPSserverPort="
+				+ iBPSserverPort;
+
+		logger.info("requestXml " + requestXml);
+
+		try {
+			String tempResponseXml = null;
+			try {
+				Socket client = new Socket(socketIP, portNo);
+				client.setSoTimeout(3600000);
+				DataOutputStream outData = new DataOutputStream(client.getOutputStream());
+
+				String dataToBeSent = requestXml;
+				byte[] dataByteArr = dataToBeSent.getBytes("UTF-8");
+				outData.writeInt(dataByteArr.length);
+				outData.write(dataByteArr);
+
+				DataInputStream in = new DataInputStream(client.getInputStream());
+
+				int dataLength = in.readInt();
+				byte[] data = new byte[dataLength];
+				in.readFully(data);
+				tempResponseXml = new String(data, "UTF-8");
+
+				in.close();
+			} catch (UnknownHostException e) {
+				tempResponseXml = SS_CONN_ERROR_MSG;
+				logger.info("UnknownHostException  " + e);
+			} catch (IOException e) {
+				tempResponseXml = SS_CONN_ERROR_MSG;
+				logger.info("IOException  " + e);
+			} catch (Exception e) {
+				tempResponseXml = SS_EXEC_ERROR_MSG;
+				logger.info("Exception  " + e);
+			}
+
+			if (tempResponseXml == null || tempResponseXml.length() == 0) {
+				responseXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<message>\n"
+						+ "<ErrorCode>1</ErrorCode>\n"
+						+ "<ErrorDesc>No Response Received from Call Client Socket Server.</ErrorDesc>\n"
+						+ "</message>";
+				logger.info("tempResponseXml 12  ");
+			} else {
+				if (tempResponseXml.equals(SS_EXEC_ERROR_MSG) || tempResponseXml.equals(SS_CONN_ERROR_MSG)) {
+					responseXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<message>\n"
+							+ "<ErrorCode>1</ErrorCode>\n" + "<ErrorDesc>" + tempResponseXml + "</ErrorDesc>\n"
+							+ "</message>";
+					logger.info("tempResponseXml 13  ");
+				} else {
+					logger.info("tempResponseXml 14  ");
+					responseXml = tempResponseXml;
+				}
+			}
+			logger.info("tempResponseXml 15  ");
+		} catch (Exception e) {
+			logger.info("tempResponseXml 16  ");
+			responseXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<message>\n" + "<ErrorCode>1</ErrorCode>\n"
+					+ "<ErrorDesc>Error while generating template.</ErrorDesc>\n" + "</message>";
+		}
+		if(responseXml.contains("<Status>0</Status>"))
+		{
+			logger.info("inside ifffffff@@@@@");
+			return "template generated";
+		}
+		else
+		{
+			logger.info("inside else@@@@@");
+			return responseXml;
+		}
+	//Chirag -end
+	}
+	
+	
+
+	//ashutosh-start
+	public String Documentgrid(IFormReference iformobj, String Stringdata) {
+
+
+
+		// on upload button
+		logger.info("Documentgrid@@ashu");
+		try {
+
+		/*logger.info("inside try");
+		String winame = getWorkitemName(iformobj);
+
+		String data = "SELECT UPLOAD_STATUS,UPLOAD_DATE_TIME FROM NG_POS_DOCUMENT_GRID where WI_NAME='" + winame + "' ";
+		logger.info("query is @@-----" + data);
+
+
+
+		List<List<String>> dataresult = iformobj.getDataFromDB(data);
+		logger.info("dataresult is @@-----" + dataresult);
+
+		logger.info("string data value@@@" + Stringdata);
+		int colIndex_status = 3;
+		int colIndex_datetime=4;
+		logger.info("colindex of status is----" + colIndex_status);
+		logger.info("colindex of date_time is----" + colIndex_datetime);
+		*/
+		int rowindex = Integer.parseInt(Stringdata);
+		logger.info("rowindex is>>>>>" + Stringdata);
+		String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+		logger.info("date is$$$$"+date);
+		iformobj.setTableCellValue("document_table", rowindex, 3, "success");
+		iformobj.setTableCellValue("document_table", rowindex, 4, date);
+		logger.info("if complete####");
+
+		}
+		catch (Exception e) {
+		// TODO: handle exception
+		e.getMessage();
+		logger.info("inside catch",e);
+		}
+		return "successfully added to document grid";
+		// iformobj.addDataToGrid("document_table", jarray);
+		}
+//ashutosh-end
+}
